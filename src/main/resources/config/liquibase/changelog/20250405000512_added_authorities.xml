@@ -1,0 +1,16 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <changeSet id="add-parent-health-worker-roles" author="you">
+    <insert tableName="jhi_authority">
+      <column name="name" value="ROLE_PARENT"/>
+    </insert>
+    <insert tableName="jhi_authority">
+      <column name="name" value="ROLE_HEALTH_WORKER"/>
+    </insert>
+  </changeSet>
+
+</databaseChangeLog>

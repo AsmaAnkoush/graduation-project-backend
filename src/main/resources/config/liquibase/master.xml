@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="floatType" value="float" dbms="mysql"/>
+    <property name="clobType" value="clob" dbms="mysql"/>
+    <property name="blobType" value="longblob" dbms="mysql"/>
+    <property name="uuidType" value="varchar(36)" dbms="mysql"/>
+    <property name="datetimeType" value="datetime(6)" dbms="mysql"/>
+    <property name="timeType" value="time(6)" dbms="mysql"/>
+
+    <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000503_added_entity_Parent.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000504_added_entity_HealthRecord.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000505_added_entity_Child.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000506_added_entity_Vaccination.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000507_added_entity_ScheduleVaccination.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000508_added_entity_HealthWorker.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000509_added_entity_Appointment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000510_added_entity_Feedback.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000511_added_entity_AIAnalyzer.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000512_added_entity_Reminder.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20250403000505_added_entity_constraints_Child.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000507_added_entity_constraints_ScheduleVaccination.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000509_added_entity_constraints_Appointment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000510_added_entity_constraints_Feedback.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000511_added_entity_constraints_AIAnalyzer.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250403000512_added_entity_constraints_Reminder.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250405000512_added_authorities.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
+</databaseChangeLog>

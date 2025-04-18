@@ -1,0 +1,28 @@
+{
+  "smartVaxApp": {
+    "scheduleVaccination": {
+      "home": {
+        "title": "Schedule Vaccinations",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Schedule Vaccination جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Schedule Vaccination",
+        "notFound": "لم يتم العثور على Schedule Vaccinations"
+      },
+      "created": "Schedule Vaccination جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Schedule Vaccination تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Schedule Vaccination تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Schedule Vaccination {{ id }}؟"
+      },
+      "detail": {
+        "title": "Schedule Vaccination"
+      },
+      "id": "ID",
+      "scheduledDate": "Scheduled Date",
+      "status": "Status",
+      "appointments": "Appointments",
+      "child": "Child",
+      "vaccination": "Vaccination"
+    }
+  }
+}

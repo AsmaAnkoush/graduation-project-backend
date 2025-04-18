@@ -1,0 +1,32 @@
+{
+  "smartVaxApp": {
+    "vaccination": {
+      "home": {
+        "title": "Vaccinations",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Vaccination",
+        "createOrEditLabel": "Create or edit a Vaccination",
+        "notFound": "No Vaccinations found"
+      },
+      "created": "A new Vaccination is created with identifier {{ param }}",
+      "updated": "A Vaccination is updated with identifier {{ param }}",
+      "deleted": "A Vaccination is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Vaccination {{ id }}?"
+      },
+      "detail": {
+        "title": "Vaccination"
+      },
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "dateGiven": "Date Given",
+      "sideEffects": "Side Effects",
+      "targetAge": "Target Age",
+      "status": "Status",
+      "treatment": "Treatment",
+      "feedbacks": "Feedbacks",
+      "scheduleVaccinations": "Schedule Vaccinations"
+    }
+  }
+}

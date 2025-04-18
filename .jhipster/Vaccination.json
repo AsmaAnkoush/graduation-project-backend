@@ -1,0 +1,59 @@
+{
+  "annotations": {
+    "changelogDate": "20250403000506"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateGiven",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "sideEffects",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "targetAge",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "treatment",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Vaccination",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "feedback",
+      "otherEntityRelationshipName": "vaccination",
+      "relationshipName": "feedbacks",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "scheduleVaccination",
+      "otherEntityRelationshipName": "vaccination",
+      "relationshipName": "scheduleVaccinations",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

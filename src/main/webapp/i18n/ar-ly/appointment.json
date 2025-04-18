@@ -1,0 +1,29 @@
+{
+  "smartVaxApp": {
+    "appointment": {
+      "home": {
+        "title": "Appointments",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Appointment جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Appointment",
+        "notFound": "لم يتم العثور على Appointments"
+      },
+      "created": "Appointment جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Appointment تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Appointment تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Appointment {{ id }}؟"
+      },
+      "detail": {
+        "title": "Appointment"
+      },
+      "id": "ID",
+      "appointmentDate": "Appointment Date",
+      "status": "Status",
+      "parent": "Parent",
+      "child": "Child",
+      "schedule": "Schedule",
+      "healthWorker": "Health Worker"
+    }
+  }
+}

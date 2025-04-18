@@ -1,0 +1,33 @@
+{
+  "smartVaxApp": {
+    "healthWorker": {
+      "home": {
+        "title": "Health Workers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Health Worker",
+        "createOrEditLabel": "Create or edit a Health Worker",
+        "notFound": "No Health Workers found"
+      },
+      "created": "A new Health Worker is created with identifier {{ param }}",
+      "updated": "A Health Worker is updated with identifier {{ param }}",
+      "deleted": "A Health Worker is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Health Worker {{ id }}?"
+      },
+      "detail": {
+        "title": "Health Worker"
+      },
+      "id": "ID",
+      "username": "Username",
+      "password": "Password",
+      "phone": "Phone",
+      "age": "Age",
+      "name": "Name",
+      "gender": "Gender",
+      "location": "Location",
+      "email": "Email",
+      "role": "Role",
+      "appointments": "Appointments"
+    }
+  }
+}

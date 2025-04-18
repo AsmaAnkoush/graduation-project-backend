@@ -1,0 +1,46 @@
+{
+  "annotations": {
+    "changelogDate": "20250403000507"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "scheduledDate",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "ScheduleVaccination",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "appointment",
+      "otherEntityRelationshipName": "schedule",
+      "relationshipName": "appointments",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "child",
+      "otherEntityRelationshipName": "scheduleVaccinations",
+      "relationshipName": "child",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "vaccination",
+      "otherEntityRelationshipName": "scheduleVaccinations",
+      "relationshipName": "vaccination",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

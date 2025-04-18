@@ -1,0 +1,25 @@
+{
+  "smartVaxApp": {
+    "aIAnalyzer": {
+      "home": {
+        "title": "AI Analyzers",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء AI Analyzer جديد",
+        "createOrEditLabel": "إنشاء أو تعديل AI Analyzer",
+        "notFound": "لم يتم العثور على AI Analyzers"
+      },
+      "created": "AI Analyzer جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "AI Analyzer تم تحديثه بالمعرف {{ param }}",
+      "deleted": "AI Analyzer تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف AI Analyzer {{ id }}؟"
+      },
+      "detail": {
+        "title": "AI Analyzer"
+      },
+      "id": "ID",
+      "analysisResult": "Analysis Result",
+      "feedback": "Feedback"
+    }
+  }
+}

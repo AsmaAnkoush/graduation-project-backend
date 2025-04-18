@@ -1,0 +1,60 @@
+{
+  "annotations": {
+    "changelogDate": "20250403000505"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dob",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "weight",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "height",
+      "fieldType": "BigDecimal"
+    }
+  ],
+  "name": "Child",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "healthRecord",
+      "relationshipName": "healthRecord",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "appointment",
+      "otherEntityRelationshipName": "child",
+      "relationshipName": "appointments",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "scheduleVaccination",
+      "otherEntityRelationshipName": "child",
+      "relationshipName": "scheduleVaccinations",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "parent",
+      "otherEntityRelationshipName": "children",
+      "relationshipName": "parent",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -1,0 +1,46 @@
+{
+  "annotations": {
+    "changelogDate": "20250403000510"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "messageText",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "sideEffects",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "treatment",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateSubmitted",
+      "fieldType": "Instant"
+    }
+  ],
+  "name": "Feedback",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "parent",
+      "otherEntityRelationshipName": "feedbacks",
+      "relationshipName": "parent",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "vaccination",
+      "otherEntityRelationshipName": "feedbacks",
+      "relationshipName": "vaccination",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

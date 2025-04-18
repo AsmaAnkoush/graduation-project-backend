@@ -1,0 +1,26 @@
+{
+  "smartVaxApp": {
+    "reminder": {
+      "home": {
+        "title": "Reminders",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Reminder جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Reminder",
+        "notFound": "لم يتم العثور على Reminders"
+      },
+      "created": "Reminder جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Reminder تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Reminder تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Reminder {{ id }}؟"
+      },
+      "detail": {
+        "title": "Reminder"
+      },
+      "id": "ID",
+      "messageText": "Message Text",
+      "appointment": "Appointment",
+      "recipient": "Recipient"
+    }
+  }
+}

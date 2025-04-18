@@ -1,0 +1,29 @@
+{
+  "smartVaxApp": {
+    "healthRecord": {
+      "home": {
+        "title": "Health Records",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Health Record جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Health Record",
+        "notFound": "لم يتم العثور على Health Records"
+      },
+      "created": "Health Record جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Health Record تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Health Record تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Health Record {{ id }}؟"
+      },
+      "detail": {
+        "title": "Health Record"
+      },
+      "id": "ID",
+      "sensitivity": "Sensitivity",
+      "diabetes": "Diabetes",
+      "highBloodPressure": "High Blood Pressure",
+      "geneticDiseases": "Genetic Diseases",
+      "bloodType": "Blood Type",
+      "child": "Child"
+    }
+  }
+}

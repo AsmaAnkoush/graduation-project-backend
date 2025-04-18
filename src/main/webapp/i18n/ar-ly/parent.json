@@ -1,0 +1,31 @@
+{
+  "smartVaxApp": {
+    "parent": {
+      "home": {
+        "title": "Parents",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Parent جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Parent",
+        "notFound": "لم يتم العثور على Parents"
+      },
+      "created": "Parent جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Parent تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Parent تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Parent {{ id }}؟"
+      },
+      "detail": {
+        "title": "Parent"
+      },
+      "id": "ID",
+      "name": "Name",
+      "phone": "Phone",
+      "dob": "Dob",
+      "role": "Role",
+      "children": "Children",
+      "appointments": "Appointments",
+      "reminders": "Reminders",
+      "feedbacks": "Feedbacks"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "smartVaxApp": {
+    "vaccination": {
+      "home": {
+        "title": "Vaccinations",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Vaccination جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Vaccination",
+        "notFound": "لم يتم العثور على Vaccinations"
+      },
+      "created": "Vaccination جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Vaccination تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Vaccination تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Vaccination {{ id }}؟"
+      },
+      "detail": {
+        "title": "Vaccination"
+      },
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "dateGiven": "Date Given",
+      "sideEffects": "Side Effects",
+      "targetAge": "Target Age",
+      "status": "Status",
+      "treatment": "Treatment",
+      "feedbacks": "Feedbacks",
+      "scheduleVaccinations": "Schedule Vaccinations"
+    }
+  }
+}

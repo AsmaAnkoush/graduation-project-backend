@@ -1,0 +1,100 @@
+
+
+entity Parent {
+  name String required,
+  phone String required unique,
+  dob LocalDate,
+  role String required
+}
+
+entity HealthRecord {
+  sensitivity String,
+  diabetes Boolean,
+  highBloodPressure Boolean,
+  geneticDiseases String,
+  bloodType String
+}
+
+entity Child {
+  name String required,
+  dob LocalDate required,
+  weight BigDecimal,
+  height BigDecimal
+}
+
+entity Vaccination {
+  name String required,
+  type String,
+  dateGiven LocalDate,
+  sideEffects String,
+  targetAge Integer,
+  status String required,
+  treatment String
+}
+
+entity ScheduleVaccination {
+  scheduledDate LocalDate required,
+  status String required
+}
+
+entity HealthWorker {
+  username String required unique,
+  password String required,
+  phone String required unique,
+  age Integer,
+  name String required,
+  gender String,
+  location String,
+  email String required unique,
+  role String required
+}
+
+entity Appointment {
+  appointmentDate Instant required,
+  status String required
+}
+
+entity Feedback {
+  messageText String required,
+  sideEffects String,
+  treatment String,
+  dateSubmitted Instant
+}
+
+entity AIAnalyzer {
+  analysisResult String
+}
+
+entity Reminder {
+  messageText String required
+}
+
+relationship OneToMany {
+  Parent{children} to Child{parent},
+  Parent{appointments} to Appointment{parent},
+  Parent{reminders} to Reminder{recipient},
+  Parent{feedbacks} to Feedback{parent},
+
+  Child{appointments} to Appointment{child},
+  Child{scheduleVaccinations} to ScheduleVaccination{child},
+
+  Vaccination{feedbacks} to Feedback{vaccination},
+  Vaccination{scheduleVaccinations} to ScheduleVaccination{vaccination},
+
+  ScheduleVaccination{appointments} to Appointment{schedule},
+
+  HealthWorker{appointments} to Appointment{healthWorker},
+}
+
+relationship OneToOne {
+  Child{healthRecord} to HealthRecord
+}
+
+relationship ManyToOne {
+  Reminder{appointment} to Appointment,
+  AIAnalyzer{feedback} to Feedback
+}
+
+dto * with mapstruct
+paginate * with pagination
+service * with serviceClass

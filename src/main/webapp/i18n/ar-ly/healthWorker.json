@@ -1,0 +1,33 @@
+{
+  "smartVaxApp": {
+    "healthWorker": {
+      "home": {
+        "title": "Health Workers",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Health Worker جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Health Worker",
+        "notFound": "لم يتم العثور على Health Workers"
+      },
+      "created": "Health Worker جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Health Worker تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Health Worker تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Health Worker {{ id }}؟"
+      },
+      "detail": {
+        "title": "Health Worker"
+      },
+      "id": "ID",
+      "username": "Username",
+      "password": "Password",
+      "phone": "Phone",
+      "age": "Age",
+      "name": "Name",
+      "gender": "Gender",
+      "location": "Location",
+      "email": "Email",
+      "role": "Role",
+      "appointments": "Appointments"
+    }
+  }
+}

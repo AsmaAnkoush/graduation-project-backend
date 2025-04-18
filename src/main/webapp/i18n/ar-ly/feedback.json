@@ -1,0 +1,29 @@
+{
+  "smartVaxApp": {
+    "feedback": {
+      "home": {
+        "title": "Feedbacks",
+        "refreshListLabel": "تحديث القائمة",
+        "createLabel": "إنشاء Feedback جديد",
+        "createOrEditLabel": "إنشاء أو تعديل Feedback",
+        "notFound": "لم يتم العثور على Feedbacks"
+      },
+      "created": "Feedback جديد تم إنشاؤه بالمعرف {{ param }}",
+      "updated": "Feedback تم تحديثه بالمعرف {{ param }}",
+      "deleted": "Feedback تم حذفه بالمعرف {{ param }}",
+      "delete": {
+        "question": "هل أنت متأكد أنك تريد حذف Feedback {{ id }}؟"
+      },
+      "detail": {
+        "title": "Feedback"
+      },
+      "id": "ID",
+      "messageText": "Message Text",
+      "sideEffects": "Side Effects",
+      "treatment": "Treatment",
+      "dateSubmitted": "Date Submitted",
+      "parent": "Parent",
+      "vaccination": "Vaccination"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "changelogDate": "20250403000511"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "ai_analyzer",
+  "fields": [
+    {
+      "fieldName": "analysisResult",
+      "fieldType": "String"
+    }
+  ],
+  "name": "AIAnalyzer",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "feedback",
+      "relationshipName": "feedback",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

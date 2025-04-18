@@ -1,0 +1,29 @@
+{
+  "smartVaxApp": {
+    "healthRecord": {
+      "home": {
+        "title": "Health Records",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Health Record",
+        "createOrEditLabel": "Create or edit a Health Record",
+        "notFound": "No Health Records found"
+      },
+      "created": "A new Health Record is created with identifier {{ param }}",
+      "updated": "A Health Record is updated with identifier {{ param }}",
+      "deleted": "A Health Record is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Health Record {{ id }}?"
+      },
+      "detail": {
+        "title": "Health Record"
+      },
+      "id": "ID",
+      "sensitivity": "Sensitivity",
+      "diabetes": "Diabetes",
+      "highBloodPressure": "High Blood Pressure",
+      "geneticDiseases": "Genetic Diseases",
+      "bloodType": "Blood Type",
+      "child": "Child"
+    }
+  }
+}
