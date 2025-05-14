@@ -8,9 +8,7 @@ import com.bzu.smartvax.repository.VaccinationRepository;
 import com.bzu.smartvax.service.dto.FeedbackAnalysisResponseDTO;
 import com.bzu.smartvax.service.dto.FeedbackDTO;
 import com.bzu.smartvax.service.mapper.FeedbackMapper;
-
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -29,26 +27,33 @@ public class FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
 
-//    @Autowired
+    //    @Autowired
     private ParentRepository parentRepository;
 
-//    @Autowired
+    //    @Autowired
     private VaccinationRepository vaccinationRepository;
 
-//    @Autowired
-//    private AIAnalyzerRepository aiAnalyzerRepository;
+    //    @Autowired
+    //    private AIAnalyzerRepository aiAnalyzerRepository; k
 
-//    @Autowired
+    //    @Autowired
     private AIAnalyzerService aiAnalyzerService;
 
     private GeminiAIService geminiAIService;
 
     private OpenAIService openAIService;
 
-
     private final FeedbackMapper feedbackMapper;
 
-    public FeedbackService(FeedbackRepository feedbackRepository, FeedbackMapper feedbackMapper, ParentRepository parentRepository, VaccinationRepository vaccinationRepository, AIAnalyzerService aiAnalyzerService, GeminiAIService geminiAIService, OpenAIService openAIService) {
+    public FeedbackService(
+        FeedbackRepository feedbackRepository,
+        FeedbackMapper feedbackMapper,
+        ParentRepository parentRepository,
+        VaccinationRepository vaccinationRepository,
+        AIAnalyzerService aiAnalyzerService,
+        GeminiAIService geminiAIService,
+        OpenAIService openAIService
+    ) {
         this.feedbackRepository = feedbackRepository;
         this.feedbackMapper = feedbackMapper;
         this.parentRepository = parentRepository;
@@ -72,18 +77,19 @@ public class FeedbackService {
     }
 
     public FeedbackAnalysisResponseDTO submitFeedback(FeedbackDTO dto) throws Exception {
-//        Parent parent = parentRepository.findById(dto.getParent().getId())
-//            .orElseThrow(() -> new RuntimeException("Parent not found"));
+        //        Parent parent = parentRepository.findById(dto.getParent().getId())
+        //            .orElseThrow(() -> new RuntimeException("Parent not found"));
 
-        Vaccination vaccination = vaccinationRepository.findById(dto.getVaccination().getId())
+        Vaccination vaccination = vaccinationRepository
+            .findById(dto.getVaccination().getId())
             .orElseThrow(() -> new RuntimeException("Vaccination not found"));
 
         Feedback feedback = new Feedback();
         feedback.setSideEffects(dto.getSideEffects()); // استخدم sideEffects هنا
-//        feedback.setParent(parent);
+        //        feedback.setParent(parent);
         feedback.setVaccination(vaccination);
         feedback.setMessageText("just a text");
-//        feedback.setDateSubmitted(LocalDateTime.now());
+        //        feedback.setDateSubmitted(LocalDateTime.now());
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
 
@@ -104,8 +110,6 @@ public class FeedbackService {
 
         return new FeedbackAnalysisResponseDTO(diagnosis, suggestions);
     }
-
-
 
     /**
      * Update a feedback.

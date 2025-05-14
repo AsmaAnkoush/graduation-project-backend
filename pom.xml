@@ -245,7 +245,13 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-        <dependency>
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt</artifactId>
+        <version>0.9.1</version>
+      </dependency>
+
+      <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
@@ -272,16 +278,11 @@
             <scope>test</scope>
         </dependency>
       <dependency>
-        <groupId>nz.ac.waikato.cms.weka</groupId>
-        <artifactId>weka-stable</artifactId>
-        <version>3.8.6</version> <!-- أو أي نسخة حديثة -->
-      </dependency>
-      <!-- مكتبة netlib-java -->
-      <dependency>
-        <groupId>com.github.fommil.netlib</groupId>
-        <artifactId>all</artifactId>
-        <version>1.1.2</version>
-      </dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>weka-stable</artifactId>
+      <version>3.8.6</version>
+    </dependency>
+
 
     </dependencies>
 
@@ -795,6 +796,7 @@
                             <artifactId>liquibase-hibernate6</artifactId>
                             <version>${liquibase.version}</version>
                         </dependency>
+
                         <dependency>
                             <groupId>jakarta.validation</groupId>
                             <artifactId>jakarta.validation-api</artifactId>
@@ -856,6 +858,8 @@
                     <optional>true</optional>
                 </dependency>
             </dependencies>
+
+
         </profile>
         <profile>
             <!-- This is automatically activated when working in Eclipse -->
@@ -872,6 +876,7 @@
                     <artifactId>spring-boot-starter-undertow</artifactId>
                 </dependency>
             </dependencies>
+
             <build>
                 <pluginManagement>
                     <plugins>

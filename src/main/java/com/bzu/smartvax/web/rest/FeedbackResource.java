@@ -7,7 +7,6 @@ import com.bzu.smartvax.service.dto.FeedbackDTO;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
@@ -56,17 +55,17 @@ public class FeedbackResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<FeedbackAnalysisResponseDTO> createFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO) throws URISyntaxException, Exception {
+    public ResponseEntity<FeedbackAnalysisResponseDTO> createFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO)
+        throws URISyntaxException, Exception {
         LOG.debug("REST request to save Feedback : {}", feedbackDTO);
         if (feedbackDTO.getId() != null) {
             throw new BadRequestAlertException("A new feedback cannot already have an ID", ENTITY_NAME, "idexists");
         }
         FeedbackAnalysisResponseDTO analysisResult = feedbackService.submitFeedback(feedbackDTO);
         return ResponseEntity.ok(analysisResult);
-
-//        return ResponseEntity.created(new URI("/api/feedbacks/" + feedbackDTO.getId()))
-//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, feedbackDTO.getId().toString()))
-//            .body(feedbackDTO);
+        //        return ResponseEntity.created(new URI("/api/feedbacks/" + feedbackDTO.getId()))
+        //            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, feedbackDTO.getId().toString()))
+        //            .body(feedbackDTO);
     }
 
     /**

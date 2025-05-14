@@ -1,26 +1,15 @@
 package com.bzu.smartvax.service.dto;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-/**
- * A DTO for the {@link com.bzu.smartvax.domain.HealthRecord} entity.
- */
-@SuppressWarnings("common-java:DuplicatedBlocks")
-public class HealthRecordDTO implements Serializable {
+public class HealthRecordDTO {
 
     private Long id;
-
     private String sensitivity;
-
     private Boolean diabetes;
-
     private Boolean highBloodPressure;
-
     private String geneticDiseases;
-
     private String bloodType;
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -67,39 +56,5 @@ public class HealthRecordDTO implements Serializable {
 
     public void setBloodType(String bloodType) {
         this.bloodType = bloodType;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof HealthRecordDTO)) {
-            return false;
-        }
-
-        HealthRecordDTO healthRecordDTO = (HealthRecordDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, healthRecordDTO.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "HealthRecordDTO{" +
-            "id=" + getId() +
-            ", sensitivity='" + getSensitivity() + "'" +
-            ", diabetes='" + getDiabetes() + "'" +
-            ", highBloodPressure='" + getHighBloodPressure() + "'" +
-            ", geneticDiseases='" + getGeneticDiseases() + "'" +
-            ", bloodType='" + getBloodType() + "'" +
-            "}";
     }
 }

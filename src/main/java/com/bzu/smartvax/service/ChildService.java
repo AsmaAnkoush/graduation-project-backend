@@ -97,7 +97,7 @@ public class ChildService {
     @Transactional(readOnly = true)
     public Optional<ChildDTO> findOne(Long id) {
         LOG.debug("Request to get Child : {}", id);
-        return childRepository.findById(id).map(childMapper::toDto);
+        return childRepository.findById(String.valueOf(id)).map(childMapper::toDto);
     }
 
     /**
@@ -107,6 +107,6 @@ public class ChildService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete Child : {}", id);
-        childRepository.deleteById(id);
+        childRepository.deleteById(String.valueOf(id));
     }
 }

@@ -1,38 +1,25 @@
+// ✅ ChildDTO.java (معدل)
 package com.bzu.smartvax.service.dto;
 
-import jakarta.validation.constraints.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 
-/**
- * A DTO for the {@link com.bzu.smartvax.domain.Child} entity.
- */
-@SuppressWarnings("common-java:DuplicatedBlocks")
-public class ChildDTO implements Serializable {
+public class ChildDTO {
 
-    private Long id;
-
-    @NotNull
+    private String id;
     private String name;
-
-    @NotNull
     private LocalDate dob;
-
     private BigDecimal weight;
-
     private BigDecimal height;
-
+    private Long parentId; // ✅ مضافة
     private HealthRecordDTO healthRecord;
 
-    private ParentDTO parent;
-
-    public Long getId() {
+    // Getters and Setters
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -68,54 +55,19 @@ public class ChildDTO implements Serializable {
         this.height = height;
     }
 
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
     public HealthRecordDTO getHealthRecord() {
         return healthRecord;
     }
 
     public void setHealthRecord(HealthRecordDTO healthRecord) {
         this.healthRecord = healthRecord;
-    }
-
-    public ParentDTO getParent() {
-        return parent;
-    }
-
-    public void setParent(ParentDTO parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ChildDTO)) {
-            return false;
-        }
-
-        ChildDTO childDTO = (ChildDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, childDTO.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.id);
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "ChildDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", dob='" + getDob() + "'" +
-            ", weight=" + getWeight() +
-            ", height=" + getHeight() +
-            ", healthRecord=" + getHealthRecord() +
-            ", parent=" + getParent() +
-            "}";
     }
 }

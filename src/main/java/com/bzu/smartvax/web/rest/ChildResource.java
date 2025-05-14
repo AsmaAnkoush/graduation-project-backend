@@ -89,7 +89,7 @@ public class ChildResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!childRepository.existsById(id)) {
+        if (!childRepository.existsById(String.valueOf(id))) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
@@ -123,7 +123,7 @@ public class ChildResource {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!childRepository.existsById(id)) {
+        if (!childRepository.existsById(String.valueOf(id))) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 

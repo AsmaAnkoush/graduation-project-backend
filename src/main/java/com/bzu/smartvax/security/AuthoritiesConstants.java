@@ -13,6 +13,5 @@ public final class AuthoritiesConstants {
     public static final String PARENT = "ROLE_PARENT";
     public static final String HEALTH_WORKER = "ROLE_HEALTH_WORKER";
 
-
     private AuthoritiesConstants() {}
 }

@@ -1,12 +1,14 @@
 package com.bzu.smartvax.repository;
 
 import com.bzu.smartvax.domain.Parent;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.stereotype.Repository;
+import com.bzu.smartvax.domain.Users;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- * Spring Data JPA repository for the Parent entity.
- */
-@SuppressWarnings("unused")
-@Repository
-public interface ParentRepository extends JpaRepository<Parent, Long> {}
+public interface ParentRepository extends JpaRepository<Parent, Long> {
+    Optional<Parent> findByUser(Users user);
+
+    Optional<Parent> findByPhone(String username);
+
+    Optional<Parent> findByUser_Username(String username);
+}

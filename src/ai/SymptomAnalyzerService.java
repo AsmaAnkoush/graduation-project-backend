@@ -1,11 +1,11 @@
-package com.smartvax.ai;  // مهم أن يكون نفس اسم الباكيج!
+package com.smartvax.ai; // مهم أن يكون نفس اسم الباكيج!
 
 import weka.classifiers.Classifier;
 import weka.classifiers.bayes.NaiveBayes;
-import weka.core.Instance;
-import weka.core.Instances;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
 public class SymptomAnalyzerService {

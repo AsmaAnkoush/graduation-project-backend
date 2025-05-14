@@ -1,82 +1,46 @@
+// ✅ Child.java - محدث بالكامل
 package com.bzu.smartvax.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
-/**
- * A Child.
- */
 @Entity
 @Table(name = "child")
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class Child implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(length = 50)
+    private String id;
 
-    @NotNull
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
-    @Column(name = "dob", nullable = false)
     private LocalDate dob;
 
-    @Column(name = "weight", precision = 21, scale = 2)
     private BigDecimal weight;
 
-    @Column(name = "height", precision = 21, scale = 2)
     private BigDecimal height;
 
-    @JsonIgnoreProperties(value = { "child" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(unique = true)
-    private HealthRecord healthRecord;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
-    @JsonIgnoreProperties(value = { "parent", "child", "schedule", "healthWorker" }, allowSetters = true)
-    private Set<Appointment> appointments = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "child")
-    @JsonIgnoreProperties(value = { "appointments", "child", "vaccination" }, allowSetters = true)
-    private Set<ScheduleVaccination> scheduleVaccinations = new HashSet<>();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "children", "appointments", "reminders", "feedbacks" }, allowSetters = true)
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
     private Parent parent;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "health_record_id")
+    private HealthRecord healthRecord;
 
-    public Long getId() {
-        return this.id;
+    // Getters and Setters
+    public String getId() {
+        return id;
     }
 
-    public Child id(Long id) {
-        this.setId(id);
-        return this;
-    }
-
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     public String getName() {
-        return this.name;
-    }
-
-    public Child name(String name) {
-        this.setName(name);
-        return this;
+        return name;
     }
 
     public void setName(String name) {
@@ -84,12 +48,7 @@ public class Child implements Serializable {
     }
 
     public LocalDate getDob() {
-        return this.dob;
-    }
-
-    public Child dob(LocalDate dob) {
-        this.setDob(dob);
-        return this;
+        return dob;
     }
 
     public void setDob(LocalDate dob) {
@@ -97,12 +56,7 @@ public class Child implements Serializable {
     }
 
     public BigDecimal getWeight() {
-        return this.weight;
-    }
-
-    public Child weight(BigDecimal weight) {
-        this.setWeight(weight);
-        return this;
+        return weight;
     }
 
     public void setWeight(BigDecimal weight) {
@@ -110,99 +64,43 @@ public class Child implements Serializable {
     }
 
     public BigDecimal getHeight() {
-        return this.height;
-    }
-
-    public Child height(BigDecimal height) {
-        this.setHeight(height);
-        return this;
+        return height;
     }
 
     public void setHeight(BigDecimal height) {
         this.height = height;
     }
 
+    public Parent getParent() {
+        return parent;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
+    }
+
     public HealthRecord getHealthRecord() {
-        return this.healthRecord;
+        return healthRecord;
     }
 
     public void setHealthRecord(HealthRecord healthRecord) {
         this.healthRecord = healthRecord;
     }
 
-    public Child healthRecord(HealthRecord healthRecord) {
-        this.setHealthRecord(healthRecord);
+    // ✅ Builder-style methods
+    public Child id(String id) {
+        this.setId(id);
         return this;
     }
 
-    public Set<Appointment> getAppointments() {
-        return this.appointments;
-    }
-
-    public void setAppointments(Set<Appointment> appointments) {
-        if (this.appointments != null) {
-            this.appointments.forEach(i -> i.setChild(null));
-        }
-        if (appointments != null) {
-            appointments.forEach(i -> i.setChild(this));
-        }
-        this.appointments = appointments;
-    }
-
-    public Child appointments(Set<Appointment> appointments) {
-        this.setAppointments(appointments);
+    public Child name(String name) {
+        this.setName(name);
         return this;
     }
 
-    public Child addAppointments(Appointment appointment) {
-        this.appointments.add(appointment);
-        appointment.setChild(this);
+    public Child dob(LocalDate dob) {
+        this.setDob(dob);
         return this;
-    }
-
-    public Child removeAppointments(Appointment appointment) {
-        this.appointments.remove(appointment);
-        appointment.setChild(null);
-        return this;
-    }
-
-    public Set<ScheduleVaccination> getScheduleVaccinations() {
-        return this.scheduleVaccinations;
-    }
-
-    public void setScheduleVaccinations(Set<ScheduleVaccination> scheduleVaccinations) {
-        if (this.scheduleVaccinations != null) {
-            this.scheduleVaccinations.forEach(i -> i.setChild(null));
-        }
-        if (scheduleVaccinations != null) {
-            scheduleVaccinations.forEach(i -> i.setChild(this));
-        }
-        this.scheduleVaccinations = scheduleVaccinations;
-    }
-
-    public Child scheduleVaccinations(Set<ScheduleVaccination> scheduleVaccinations) {
-        this.setScheduleVaccinations(scheduleVaccinations);
-        return this;
-    }
-
-    public Child addScheduleVaccinations(ScheduleVaccination scheduleVaccination) {
-        this.scheduleVaccinations.add(scheduleVaccination);
-        scheduleVaccination.setChild(this);
-        return this;
-    }
-
-    public Child removeScheduleVaccinations(ScheduleVaccination scheduleVaccination) {
-        this.scheduleVaccinations.remove(scheduleVaccination);
-        scheduleVaccination.setChild(null);
-        return this;
-    }
-
-    public Parent getParent() {
-        return this.parent;
-    }
-
-    public void setParent(Parent parent) {
-        this.parent = parent;
     }
 
     public Child parent(Parent parent) {
@@ -210,34 +108,8 @@ public class Child implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Child)) {
-            return false;
-        }
-        return getId() != null && getId().equals(((Child) o).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "Child{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", dob='" + getDob() + "'" +
-            ", weight=" + getWeight() +
-            ", height=" + getHeight() +
-            "}";
+    public Child healthRecord(HealthRecord healthRecord) {
+        this.setHealthRecord(healthRecord);
+        return this;
     }
 }

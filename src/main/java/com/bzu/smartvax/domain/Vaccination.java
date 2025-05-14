@@ -30,9 +30,6 @@ public class Vaccination implements Serializable {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "date_given")
-    private LocalDate dateGiven;
-
     @Column(name = "side_effects")
     private String sideEffects;
 
@@ -93,19 +90,6 @@ public class Vaccination implements Serializable {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public LocalDate getDateGiven() {
-        return this.dateGiven;
-    }
-
-    public Vaccination dateGiven(LocalDate dateGiven) {
-        this.setDateGiven(dateGiven);
-        return this;
-    }
-
-    public void setDateGiven(LocalDate dateGiven) {
-        this.dateGiven = dateGiven;
     }
 
     public String getSideEffects() {
@@ -248,7 +232,6 @@ public class Vaccination implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", type='" + getType() + "'" +
-            ", dateGiven='" + getDateGiven() + "'" +
             ", sideEffects='" + getSideEffects() + "'" +
             ", targetAge=" + getTargetAge() +
             ", status='" + getStatus() + "'" +

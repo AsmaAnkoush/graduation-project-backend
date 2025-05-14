@@ -28,4 +28,3 @@ public class FeedbackAnalysisResponseDTO {
         this.suggestions = suggestions;
     }
 }
-
