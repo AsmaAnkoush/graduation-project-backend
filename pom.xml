@@ -281,7 +281,13 @@
       <groupId>nz.ac.waikato.cms.weka</groupId>
       <artifactId>weka-stable</artifactId>
       <version>3.8.6</version>
+
     </dependency>
+      <dependency>
+        <groupId>com.twilio.sdk</groupId>
+        <artifactId>twilio</artifactId>
+        <version>9.13.0</version> <!-- Check for latest version: https://mvnrepository.com/artifact/com.twilio.sdk/twilio -->
+      </dependency>
 
 
     </dependencies>
@@ -383,6 +389,7 @@
                             <artifactId>nohttp-checkstyle</artifactId>
                             <version>${nohttp-checkstyle.version}</version>
                         </dependency>
+
                     </dependencies>
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
@@ -789,7 +796,7 @@
                         <dependency>
                             <groupId>org.liquibase</groupId>
                             <artifactId>liquibase-core</artifactId>
-                            <version>${liquibase.version}</version>
+                            <version>4.23.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.liquibase.ext</groupId>

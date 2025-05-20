@@ -1,4 +1,3 @@
----
 spring:
   config:
     activate:
@@ -10,6 +9,16 @@ spring:
       enabled: false
       lifecycle-management: start-only
       file: src/main/docker/services.yml
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/smartvax?useSSL=false&serverTimezone=UTC
+    username: root
+    password: yourpassword
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
 
   jmx:
     enabled: false
