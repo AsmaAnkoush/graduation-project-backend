@@ -30,6 +30,9 @@
     <include file="config/liquibase/changelog/20250403000511_added_entity_constraints_AIAnalyzer.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20250403000512_added_entity_constraints_Reminder.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20250405000512_added_authorities.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250521212052_create_civil_chidren.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20250521212056_create_users.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>
