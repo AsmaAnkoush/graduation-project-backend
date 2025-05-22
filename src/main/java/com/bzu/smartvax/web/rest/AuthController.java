@@ -5,7 +5,6 @@ import com.bzu.smartvax.repository.UsersRepository;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,23 +29,24 @@ public class AuthController {
         String username = loginRequest.get("username");
         String password = loginRequest.get("password");
 
-        Optional<Users> userOpt = usersRepository.findByUsername(username);
-        if (userOpt.isPresent() && passwordEncoder.matches(password, userOpt.get().getPassword())) {
-            Users user = userOpt.get();
+        try {
+            Users user = usersRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-            // ✅ حفظ المستخدم في الجلسة
-            session.setAttribute("user", user);
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                session.setAttribute("user", user);
 
-            // ✅ إعداد صلاحية المستخدم كما هي من جدول users (مثل: "PARENT")
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                user.getUsername(),
-                null,
-                List.of(new SimpleGrantedAuthority(user.getRole())) // لا تضيف ROLE_
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    user.getUsername(),
+                    null,
+                    List.of(new SimpleGrantedAuthority(user.getRole()))
+                );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            return ResponseEntity.ok(Map.of("username", user.getUsername(), "role", user.getRole()));
-        } else {
+                return ResponseEntity.ok(Map.of("username", user.getUsername(), "role", user.getRole()));
+            } else {
+                return ResponseEntity.status(401).body("اسم المستخدم أو كلمة المرور غير صحيحة");
+            }
+        } catch (RuntimeException e) {
             return ResponseEntity.status(401).body("اسم المستخدم أو كلمة المرور غير صحيحة");
         }
     }
@@ -65,7 +65,6 @@ public class AuthController {
             return ResponseEntity.status(401).body("لا يوجد مستخدم في الجلسة");
         }
 
-        // 🔍 للتأكد من وجود الصلاحية في السيكيورتي كونتكست
         System.out.println("🔐 Authenticated role: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
 
         return ResponseEntity.ok(Map.of("username", user.getUsername(), "role", user.getRole()));

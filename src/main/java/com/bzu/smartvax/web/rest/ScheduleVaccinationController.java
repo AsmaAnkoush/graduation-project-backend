@@ -42,13 +42,13 @@ public class ScheduleVaccinationController {
             return Collections.emptyList();
         }
 
-        Optional<Parent> parentOpt = parentRepository.findByUser_Username(user.getUsername());
-        if (parentOpt.isEmpty()) {
+        Parent parent;
+        try {
+            parent = parentRepository.findByUser_Username(user.getUsername()).orElseThrow();
+        } catch (NoSuchElementException e) {
             System.out.println("❌ لم يتم العثور على الأب.");
             return Collections.emptyList();
         }
-
-        Parent parent = parentOpt.get();
 
         List<String> childIds = childRepository.findByParentId(parent.getId()).stream().map(Child::getId).collect(Collectors.toList());
 
