@@ -98,14 +98,29 @@ public class FeedbackService {
 
     private FeedbackAnalysisResponseDTO analyzeAndSaveFeedback(Feedback feedback) throws Exception {
         String symptoms = feedback.getSideEffects();
-        String vaccineName = feedback.getVaccination().getName();
+        String vaccineName = feedback.getVaccination().getType(); // أو getName() لو الاسم مثل MMR
 
         boolean fever = symptoms.contains("حرارة") || symptoms.contains("سخونة");
         boolean redness = symptoms.contains("احمرار");
         boolean swelling = symptoms.contains("انتفاخ");
         boolean rash = symptoms.contains("طفح") || symptoms.contains("حساسية");
+        boolean headache = symptoms.contains("صداع");
+        boolean vomiting = symptoms.contains("تقيؤ") || symptoms.contains("ترجيع");
+        boolean fatigue = symptoms.contains("تعب");
+        boolean lossOfAppetite = symptoms.contains("فقدان شهية") || symptoms.contains("قلة أكل");
 
-        String diagnosis = aiAnalyzerService.predictDiagnosis(vaccineName, fever, redness, swelling, rash);
+        String diagnosis = aiAnalyzerService.predictDiagnosis(
+            vaccineName,
+            fever,
+            redness,
+            swelling,
+            rash,
+            headache,
+            vomiting,
+            fatigue,
+            lossOfAppetite
+        );
+
         String suggestions = geminiAIService.getSuggestions(symptoms);
 
         return new FeedbackAnalysisResponseDTO(diagnosis, suggestions);

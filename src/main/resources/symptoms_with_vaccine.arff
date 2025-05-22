@@ -1,0 +1,32 @@
+@RELATION التطعيمات_والأعراض_الفلسطينية
+
+@ATTRIBUTE التطعيم {BCG,HepB,IPV,OPV,Pentavalent,PCV,MMR,DTP,DT}
+@ATTRIBUTE الحمى {yes, no}
+@ATTRIBUTE الاحمرار {yes, no}
+@ATTRIBUTE التورم {yes, no}
+@ATTRIBUTE الطفح_الجلدي {yes, no}
+@ATTRIBUTE الصداع {yes, no}
+@ATTRIBUTE القيء {yes, no}
+@ATTRIBUTE التعب {yes, no}
+@ATTRIBUTE فقدان_الشهية {yes, no}
+@ATTRIBUTE التشخيص {ردة_فعل_طبيعية,تحسس,حالة_خطيرة}
+
+@DATA
+BCG,yes,yes,yes,no,no,yes,no,yes,تحسس
+BCG,no,no,no,no,no,yes,yes,yes,ردة_فعل_طبيعية
+HepB,yes,no,no,no,no,yes,no,no,تحسس
+HepB,no,yes,yes,yes,yes,yes,no,no,تحسس
+IPV,yes,no,no,no,yes,yes,no,no,ردة_فعل_طبيعية
+IPV,yes,no,no,yes,yes,no,yes,no,ردة_فعل_طبيعية
+OPV,yes,yes,no,yes,no,yes,no,yes,تحسس
+OPV,yes,no,no,yes,yes,yes,yes,yes,ردة_فعل_طبيعية
+Pentavalent,no,no,yes,no,no,no,no,no,ردة_فعل_طبيعية
+Pentavalent,no,yes,yes,yes,no,no,yes,yes,ردة_فعل_طبيعية
+PCV,yes,no,yes,yes,yes,no,no,yes,ردة_فعل_طبيعية
+PCV,no,no,yes,no,no,yes,yes,no,حالة_خطيرة
+MMR,yes,yes,no,no,yes,yes,yes,no,ردة_فعل_طبيعية
+MMR,yes,yes,no,no,no,yes,yes,yes,ردة_فعل_طبيعية
+DTP,yes,yes,yes,no,no,yes,no,no,حالة_خطيرة
+DTP,no,no,no,yes,no,no,no,no,تحسس
+DT,yes,no,yes,no,no,yes,yes,no,ردة_فعل_طبيعية
+DT,yes,yes,no,no,no,no,no,yes,ردة_فعل_طبيعية

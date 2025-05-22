@@ -40,7 +40,7 @@ public class VaccinationGeneratorService {
                 ScheduleVaccination schedule = new ScheduleVaccination();
                 schedule.setChild(child);
                 schedule.setVaccination(vaccine);
-                schedule.setScheduledDate(scheduledDate);
+                schedule.setScheduledDate(child.getDob().plusDays(vaccine.getTargetAge()));
                 schedule.setStatus("SCHEDULED");
 
                 // ✅ حفظ في قاعدة البيانات
