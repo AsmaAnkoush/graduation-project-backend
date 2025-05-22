@@ -23,7 +23,7 @@
             The spring-boot version should match the one managed by https://mvnrepository.com/artifact/tech.jhipster/jhipster-dependencies/${jhipster-dependencies.version}
         -->
         <maven.version>3.2.5</maven.version>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <node.version>v22.14.0</node.version>
         <npm.version>11.2.0</npm.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -783,10 +783,10 @@
                         <changeLogFile>config/liquibase/master.xml</changeLogFile>
                         <diffChangeLogFile>${project.basedir}/src/main/resources/config/liquibase/changelog/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
                         <driver>com.mysql.cj.jdbc.Driver</driver>
-                        <url>jdbc:mysql://localhost:3306/smartvax</url>
-                      <defaultSchemaName>smartvax</defaultSchemaName>
-                        <username>root</username>
-                        <password>reemreem2024</password>
+                        <url>${liquibase-plugin.url}</url>
+                        <defaultSchemaName/>
+                        <username>${liquibase-plugin.username}</username>
+                        <password>${liquibase-plugin.password}</password>
                         <referenceUrl>hibernate:spring:com.bzu.smartvax.domain?dialect=org.hibernate.dialect.MySQL8Dialect&amp;hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
                         <verbose>true</verbose>
                         <logging>debug</logging>
@@ -796,7 +796,7 @@
                         <dependency>
                             <groupId>org.liquibase</groupId>
                             <artifactId>liquibase-core</artifactId>
-                            <version>${liquibase.version}</version>
+                            <version>4.23.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.liquibase.ext</groupId>
@@ -840,7 +840,7 @@
             <properties>
                 <!-- default Spring profiles -->
                 <liquibase-plugin.password/>
-                <liquibase-plugin.url>jdbc:mysql://localhost:3306/SmartVax</liquibase-plugin.url>
+                <liquibase-plugin.url>jdbc:mysql://localhost:3306/SmartVaxApp</liquibase-plugin.url>
                 <liquibase-plugin.username>root</liquibase-plugin.username>
                 <profile.test>test,testdev</profile.test>
                 <spring.profiles.active>dev${profile.tls}${profile.no-liquibase}</spring.profiles.active>
@@ -964,7 +964,7 @@
             <properties>
                 <!-- default Spring profiles -->
                 <liquibase-plugin.password/>
-                <liquibase-plugin.url>jdbc:mysql://localhost:3306/SmartVax</liquibase-plugin.url>
+                <liquibase-plugin.url>jdbc:mysql://localhost:3306/SmartVaxApp</liquibase-plugin.url>
                 <liquibase-plugin.username>root</liquibase-plugin.username>
                 <profile.test>test,testprod</profile.test>
                 <spring.profiles.active>prod${profile.api-docs}${profile.tls}${profile.e2e}${profile.no-liquibase}</spring.profiles.active>

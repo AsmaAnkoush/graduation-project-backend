@@ -32,9 +32,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/smartvax?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3306/smartvax?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password: reemreem2024
+    password: halaqurt0595091640
     hikari:
       poolName: Hikari
       auto-commit: false
