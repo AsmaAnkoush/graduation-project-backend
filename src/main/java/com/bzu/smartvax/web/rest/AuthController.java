@@ -42,7 +42,9 @@ public class AuthController {
                 );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                return ResponseEntity.ok(Map.of("username", user.getUsername(), "role", user.getRole()));
+                return ResponseEntity.ok(
+                    Map.of("username", user.getUsername(), "role", user.getRole(), "referenceId", user.getReferenceId())
+                );
             } else {
                 return ResponseEntity.status(401).body("اسم المستخدم أو كلمة المرور غير صحيحة");
             }

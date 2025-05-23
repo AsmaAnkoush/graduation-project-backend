@@ -1,13 +1,21 @@
 package com.bzu.smartvax.web.rest;
 
+import com.bzu.smartvax.domain.Appointment;
+import com.bzu.smartvax.domain.Child;
 import com.bzu.smartvax.repository.AppointmentRepository;
 import com.bzu.smartvax.service.AppointmentService;
 import com.bzu.smartvax.service.dto.AppointmentDTO;
+import com.bzu.smartvax.service.dto.ChildDTO;
+import com.bzu.smartvax.service.dto.ScheduleVaccinationDTO;
+import com.bzu.smartvax.service.dto.VaccinationDTO;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -16,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -175,5 +184,51 @@ public class AppointmentResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/health-worker/{id}/appointments-by-date")
+    public ResponseEntity<List<AppointmentDTO>> getAppointmentsByDate(
+        @PathVariable("id") Long healthWorkerId,
+        @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        Instant startOfDay = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant endOfDay = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+
+        List<Appointment> appointments = appointmentRepository.findByHealthWorkerIdAndAppointmentDateBetween(
+            healthWorkerId,
+            startOfDay,
+            endOfDay
+        );
+
+        List<AppointmentDTO> dtos = appointments
+            .stream()
+            .map(app -> {
+                AppointmentDTO dto = new AppointmentDTO();
+                dto.setId(app.getId());
+                dto.setStatus(app.getStatus());
+                dto.setAppointmentDate(app.getAppointmentDate());
+
+                ChildDTO childDTO = new ChildDTO();
+                childDTO.setId(app.getChild().getId());
+                childDTO.setName(app.getChild().getName());
+                dto.setChild(childDTO);
+
+                VaccinationDTO vaccinationDTO = new VaccinationDTO();
+                vaccinationDTO.setId(app.getSchedule().getVaccination().getId());
+                vaccinationDTO.setName(app.getSchedule().getVaccination().getName());
+
+                ScheduleVaccinationDTO scheduleDTO = new ScheduleVaccinationDTO();
+                scheduleDTO.setId(app.getSchedule().getId());
+                scheduleDTO.setScheduledDate(app.getSchedule().getScheduledDate());
+                scheduleDTO.setStatus(app.getSchedule().getStatus());
+                scheduleDTO.setVaccination(vaccinationDTO);
+
+                dto.setSchedule(scheduleDTO);
+
+                return dto;
+            })
+            .toList();
+
+        return ResponseEntity.ok(dtos);
     }
 }

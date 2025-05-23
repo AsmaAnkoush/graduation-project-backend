@@ -24,6 +24,17 @@ public class Users implements Serializable {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private Parent parent;
 
+    @Column(name = "reference_id")
+    private Long referenceId;
+
+    public Long getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(Long referenceId) {
+        this.referenceId = referenceId;
+    }
+
     // Getters and Setters
 
     public Long getId() {

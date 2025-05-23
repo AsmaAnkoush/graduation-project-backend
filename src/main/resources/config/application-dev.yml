@@ -34,7 +34,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/smartvax?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password: halaqurt0595091640
+    password: aya@123456#
     hikari:
       poolName: Hikari
       auto-commit: false
