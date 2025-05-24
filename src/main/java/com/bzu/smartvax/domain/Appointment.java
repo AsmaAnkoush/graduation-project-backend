@@ -1,5 +1,6 @@
 package com.bzu.smartvax.domain;
 
+import com.bzu.smartvax.service.dto.ScheduleVaccinationDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
