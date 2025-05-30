@@ -98,7 +98,7 @@ public class FeedbackService {
 
     private FeedbackAnalysisResponseDTO analyzeAndSaveFeedback(Feedback feedback) throws Exception {
         String symptoms = feedback.getSideEffects();
-        String vaccineName = feedback.getVaccination().getType(); // أو getName() لو الاسم مثل MMR
+        String vaccineName = feedback.getVaccination().getName();
 
         boolean fever = symptoms.contains("حرارة") || symptoms.contains("سخونة");
         boolean redness = symptoms.contains("احمرار");

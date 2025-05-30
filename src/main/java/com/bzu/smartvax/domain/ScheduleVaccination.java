@@ -31,8 +31,11 @@ public class ScheduleVaccination implements Serializable {
     @Column(name = "status", nullable = false)
     private String status;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "schedule")
-    @JsonIgnoreProperties(value = { "parent", "child", "schedule", "healthWorker" }, allowSetters = true)
+    @ManyToMany(mappedBy = "schedules")
+    @JsonIgnoreProperties(
+        value = { "parent", "child", "schedules", "healthWorker", "vaccinationCenter", "requestedNewCenter" },
+        allowSetters = true
+    )
     private Set<Appointment> appointments = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +46,11 @@ public class ScheduleVaccination implements Serializable {
     @JsonIgnoreProperties(value = { "feedbacks", "scheduleVaccinations" }, allowSetters = true)
     private Vaccination vaccination;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @ManyToOne
+    @JoinColumn(name = "vaccination_group_id")
+    private VaccinationGroup vaccinationGroup;
+
+    // === Getters & Setters ===
 
     public Long getId() {
         return this.id;
@@ -89,12 +96,6 @@ public class ScheduleVaccination implements Serializable {
     }
 
     public void setAppointments(Set<Appointment> appointments) {
-        if (this.appointments != null) {
-            this.appointments.forEach(i -> i.setSchedule(null));
-        }
-        if (appointments != null) {
-            appointments.forEach(i -> i.setSchedule(this));
-        }
         this.appointments = appointments;
     }
 
@@ -105,13 +106,11 @@ public class ScheduleVaccination implements Serializable {
 
     public ScheduleVaccination addAppointments(Appointment appointment) {
         this.appointments.add(appointment);
-        appointment.setSchedule(this);
         return this;
     }
 
     public ScheduleVaccination removeAppointments(Appointment appointment) {
         this.appointments.remove(appointment);
-        appointment.setSchedule(null);
         return this;
     }
 
@@ -141,32 +140,41 @@ public class ScheduleVaccination implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public VaccinationGroup getVaccinationGroup() {
+        return vaccinationGroup;
+    }
+
+    public void setVaccinationGroup(VaccinationGroup vaccinationGroup) {
+        this.vaccinationGroup = vaccinationGroup;
+    }
+
+    // === equals, hashCode, toString ===
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof ScheduleVaccination)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof ScheduleVaccination)) return false;
         return getId() != null && getId().equals(((ScheduleVaccination) o).getId());
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "ScheduleVaccination{" +
-            "id=" + getId() +
-            ", scheduledDate='" + getScheduledDate() + "'" +
-            ", status='" + getStatus() + "'" +
-            "}";
+        return (
+            "ScheduleVaccination{" +
+            "id=" +
+            getId() +
+            ", scheduledDate='" +
+            getScheduledDate() +
+            "'" +
+            ", status='" +
+            getStatus() +
+            "'" +
+            "}"
+        );
     }
 }

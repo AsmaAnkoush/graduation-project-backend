@@ -72,7 +72,6 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers(mvc.pattern("/swagger-ui/**"))
                     .permitAll()
-                    // فتح المسارات الجديدة بدون تحقق
                     .requestMatchers(mvc.pattern(HttpMethod.POST, "/api/login"))
                     .permitAll()
                     .requestMatchers(mvc.pattern("/api/register-parent"))
@@ -81,15 +80,16 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers(mvc.pattern("/api/appointments/**"))
                     .permitAll()
+                    .requestMatchers(mvc.pattern("/api/health-workers/by-user/**"))
+                    .permitAll()
                     .requestMatchers("/api/schedule-vaccinations", "/api/schedule-vaccinations/**")
                     .permitAll()
                     .requestMatchers("/api/vaccinations", "/api/vaccinations/**")
                     .permitAll()
                     .requestMatchers("/api/feedbacks", "/api/feedbacks/**")
                     .permitAll()
-                    // .requestMatchers("/api/schedule-vaccinations", "/api/schedule-vaccinations/**").hasAuthority("PARENT")
-
-                    // حماية باقي مسارات API
+                    .requestMatchers("/api/vaccination-centers", "/api/vaccination-centers/**")
+                    .permitAll()
                     .requestMatchers(mvc.pattern("/api/**"))
                     .authenticated()
                     .requestMatchers(mvc.pattern("/management/health"))

@@ -23,6 +23,10 @@ public class ScheduleVaccinationDTO implements Serializable {
 
     private VaccinationDTO vaccination;
 
+    private VaccinationGroupDTO vaccinationGroup; // ✅ الحقل الجديد
+
+    // === Getters & Setters ===
+
     public Long getId() {
         return id;
     }
@@ -63,16 +67,23 @@ public class ScheduleVaccinationDTO implements Serializable {
         this.vaccination = vaccination;
     }
 
+    public VaccinationGroupDTO getVaccinationGroup() {
+        return vaccinationGroup;
+    }
+
+    public void setVaccinationGroup(VaccinationGroupDTO vaccinationGroup) {
+        this.vaccinationGroup = vaccinationGroup;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ScheduleVaccinationDTO)) {
+        if (!(o instanceof ScheduleVaccinationDTO scheduleVaccinationDTO)) {
             return false;
         }
 
-        ScheduleVaccinationDTO scheduleVaccinationDTO = (ScheduleVaccinationDTO) o;
         if (this.id == null) {
             return false;
         }
@@ -93,6 +104,7 @@ public class ScheduleVaccinationDTO implements Serializable {
             ", status='" + getStatus() + "'" +
             ", child=" + getChild() +
             ", vaccination=" + getVaccination() +
+            ", vaccinationGroup=" + getVaccinationGroup() + // ✅ أضيفت
             "}";
     }
 }

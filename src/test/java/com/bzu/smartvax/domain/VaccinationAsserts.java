@@ -48,11 +48,11 @@ public class VaccinationAsserts {
         assertThat(actual)
             .as("Verify Vaccination relevant properties")
             .satisfies(a -> assertThat(a.getName()).as("check name").isEqualTo(expected.getName()))
-            .satisfies(a -> assertThat(a.getType()).as("check type").isEqualTo(expected.getType()))
-            .satisfies(a -> assertThat(a.getSideEffects()).as("check sideEffects").isEqualTo(expected.getSideEffects()))
-            .satisfies(a -> assertThat(a.getTargetAge()).as("check targetAge").isEqualTo(expected.getTargetAge()))
-            .satisfies(a -> assertThat(a.getStatus()).as("check status").isEqualTo(expected.getStatus()))
-            .satisfies(a -> assertThat(a.getTreatment()).as("check treatment").isEqualTo(expected.getTreatment()));
+            .satisfies(a -> assertThat(a.getDose()).as("check dose").isEqualTo(expected.getDose()))
+            .satisfies(a -> assertThat(a.getTreatment()).as("check treatment").isEqualTo(expected.getTreatment()))
+            .satisfies(a ->
+                assertThat(a.getRouteOfAdministration()).as("check routeOfAdministration").isEqualTo(expected.getRouteOfAdministration())
+            );
     }
 
     /**
@@ -62,6 +62,9 @@ public class VaccinationAsserts {
      * @param actual the actual entity
      */
     public static void assertVaccinationUpdatableRelationshipsEquals(Vaccination expected, Vaccination actual) {
-        // empty method
+        assertThat(actual)
+            .as("Verify Vaccination relationships")
+            .satisfies(a -> assertThat(a.getVaccineType()).as("check vaccineType").isEqualTo(expected.getVaccineType()))
+            .satisfies(a -> assertThat(a.getGroup()).as("check group").isEqualTo(expected.getGroup()));
     }
 }

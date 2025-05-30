@@ -1,4 +1,3 @@
-// ✅ ChildDTO.java (معدل)
 package com.bzu.smartvax.service.dto;
 
 import java.math.BigDecimal;
@@ -11,10 +10,12 @@ public class ChildDTO {
     private LocalDate dob;
     private BigDecimal weight;
     private BigDecimal height;
-    private Long parentId; // ✅ مضافة
+    private Long parentId;
     private HealthRecordDTO healthRecord;
+    private VaccinationCenterDTO vaccinationCenter;
 
-    // Getters and Setters
+    // === Getters and Setters ===
+
     public String getId() {
         return id;
     }
@@ -69,5 +70,13 @@ public class ChildDTO {
 
     public void setHealthRecord(HealthRecordDTO healthRecord) {
         this.healthRecord = healthRecord;
+    }
+
+    public VaccinationCenterDTO getVaccinationCenter() {
+        return vaccinationCenter;
+    }
+
+    public void setVaccinationCenter(VaccinationCenterDTO vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
     }
 }

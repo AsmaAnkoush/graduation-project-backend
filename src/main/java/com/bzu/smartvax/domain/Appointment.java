@@ -1,11 +1,11 @@
 package com.bzu.smartvax.domain;
 
-import com.bzu.smartvax.service.dto.ScheduleVaccinationDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * A Appointment.
@@ -30,6 +30,9 @@ public class Appointment implements Serializable {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "reschedule_reason")
+    private String rescheduleReason;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "children", "appointments", "reminders", "feedbacks" }, allowSetters = true)
     private Parent parent;
@@ -39,21 +42,36 @@ public class Appointment implements Serializable {
     private Child child;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "appointments", "child", "vaccination" }, allowSetters = true)
-    private ScheduleVaccination schedule;
+    @JoinColumn(name = "vaccination_center_id")
+    @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true)
+    private VaccinationCenter vaccinationCenter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requested_center_id")
+    @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true)
+    private VaccinationCenter requestedNewCenter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "appointments" }, allowSetters = true)
     private HealthWorker healthWorker;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @ManyToMany
+    @JoinTable(
+        name = "appointment_schedule_vaccination",
+        joinColumns = @JoinColumn(name = "appointment_id"),
+        inverseJoinColumns = @JoinColumn(name = "schedule_id")
+    )
+    @JsonIgnoreProperties(value = { "appointments", "child", "vaccination" }, allowSetters = true)
+    private List<ScheduleVaccination> schedules;
+
+    // === Getters and Setters ===
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public Appointment id(Long id) {
-        this.setId(id);
+        this.id = id;
         return this;
     }
 
@@ -62,11 +80,11 @@ public class Appointment implements Serializable {
     }
 
     public Instant getAppointmentDate() {
-        return this.appointmentDate;
+        return appointmentDate;
     }
 
     public Appointment appointmentDate(Instant appointmentDate) {
-        this.setAppointmentDate(appointmentDate);
+        this.appointmentDate = appointmentDate;
         return this;
     }
 
@@ -75,11 +93,11 @@ public class Appointment implements Serializable {
     }
 
     public String getStatus() {
-        return this.status;
+        return status;
     }
 
     public Appointment status(String status) {
-        this.setStatus(status);
+        this.status = status;
         return this;
     }
 
@@ -87,84 +105,113 @@ public class Appointment implements Serializable {
         this.status = status;
     }
 
+    public String getRescheduleReason() {
+        return rescheduleReason;
+    }
+
+    public Appointment rescheduleReason(String rescheduleReason) {
+        this.rescheduleReason = rescheduleReason;
+        return this;
+    }
+
+    public void setRescheduleReason(String rescheduleReason) {
+        this.rescheduleReason = rescheduleReason;
+    }
+
     public Parent getParent() {
-        return this.parent;
+        return parent;
+    }
+
+    public Appointment parent(Parent parent) {
+        this.parent = parent;
+        return this;
     }
 
     public void setParent(Parent parent) {
         this.parent = parent;
     }
 
-    public Appointment parent(Parent parent) {
-        this.setParent(parent);
-        return this;
+    public Child getChild() {
+        return child;
     }
 
-    public Child getChild() {
-        return this.child;
+    public Appointment child(Child child) {
+        this.child = child;
+        return this;
     }
 
     public void setChild(Child child) {
         this.child = child;
     }
 
-    public Appointment child(Child child) {
-        this.setChild(child);
+    public VaccinationCenter getVaccinationCenter() {
+        return vaccinationCenter;
+    }
+
+    public Appointment vaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
         return this;
     }
 
-    public ScheduleVaccination getSchedule() {
-        return this.schedule;
+    public void setVaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
     }
 
-    public void setSchedule(ScheduleVaccination scheduleVaccination) {
-        this.schedule = scheduleVaccination;
+    public VaccinationCenter getRequestedNewCenter() {
+        return requestedNewCenter;
     }
 
-    public Appointment schedule(ScheduleVaccination scheduleVaccination) {
-        this.setSchedule(scheduleVaccination);
+    public Appointment requestedNewCenter(VaccinationCenter requestedNewCenter) {
+        this.requestedNewCenter = requestedNewCenter;
         return this;
+    }
+
+    public void setRequestedNewCenter(VaccinationCenter requestedNewCenter) {
+        this.requestedNewCenter = requestedNewCenter;
     }
 
     public HealthWorker getHealthWorker() {
-        return this.healthWorker;
+        return healthWorker;
+    }
+
+    public Appointment healthWorker(HealthWorker healthWorker) {
+        this.healthWorker = healthWorker;
+        return this;
     }
 
     public void setHealthWorker(HealthWorker healthWorker) {
         this.healthWorker = healthWorker;
     }
 
-    public Appointment healthWorker(HealthWorker healthWorker) {
-        this.setHealthWorker(healthWorker);
+    public List<ScheduleVaccination> getSchedules() {
+        return schedules;
+    }
+
+    public Appointment schedules(List<ScheduleVaccination> schedules) {
+        this.schedules = schedules;
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public void setSchedules(List<ScheduleVaccination> schedules) {
+        this.schedules = schedules;
+    }
+
+    // === equals/hashCode/toString ===
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Appointment)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof Appointment)) return false;
         return getId() != null && getId().equals(((Appointment) o).getId());
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "Appointment{" +
-            "id=" + getId() +
-            ", appointmentDate='" + getAppointmentDate() + "'" +
-            ", status='" + getStatus() + "'" +
-            "}";
+        return "Appointment{" + "id=" + getId() + ", appointmentDate=" + getAppointmentDate() + ", status='" + getStatus() + '\'' + '}';
     }
 }

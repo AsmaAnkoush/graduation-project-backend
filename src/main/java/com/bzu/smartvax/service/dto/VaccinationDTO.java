@@ -2,7 +2,6 @@ package com.bzu.smartvax.service.dto;
 
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -16,18 +15,20 @@ public class VaccinationDTO implements Serializable {
     @NotNull
     private String name;
 
-    private String type;
-
-    private LocalDate dateGiven;
-
-    private String sideEffects;
-
-    private Integer targetAge;
-
-    @NotNull
-    private String status;
+    private String dose;
 
     private String treatment;
+
+    private String routeOfAdministration;
+
+    // ✅ معلومات نوع اللقاح
+    private Long vaccineTypeId;
+    private String vaccineTypeName; // NEW
+
+    // ✅ معلومات مجموعة التطعيم
+    private Long groupId;
+    private String groupName; // NEW
+    private Integer targetAgeDays; // NEW
 
     public Long getId() {
         return id;
@@ -45,44 +46,12 @@ public class VaccinationDTO implements Serializable {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getDose() {
+        return dose;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public LocalDate getDateGiven() {
-        return dateGiven;
-    }
-
-    public void setDateGiven(LocalDate dateGiven) {
-        this.dateGiven = dateGiven;
-    }
-
-    public String getSideEffects() {
-        return sideEffects;
-    }
-
-    public void setSideEffects(String sideEffects) {
-        this.sideEffects = sideEffects;
-    }
-
-    public Integer getTargetAge() {
-        return targetAge;
-    }
-
-    public void setTargetAge(Integer targetAge) {
-        this.targetAge = targetAge;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDose(String dose) {
+        this.dose = dose;
     }
 
     public String getTreatment() {
@@ -93,39 +62,98 @@ public class VaccinationDTO implements Serializable {
         this.treatment = treatment;
     }
 
+    public String getRouteOfAdministration() {
+        return routeOfAdministration;
+    }
+
+    public void setRouteOfAdministration(String routeOfAdministration) {
+        this.routeOfAdministration = routeOfAdministration;
+    }
+
+    public Long getVaccineTypeId() {
+        return vaccineTypeId;
+    }
+
+    public void setVaccineTypeId(Long vaccineTypeId) {
+        this.vaccineTypeId = vaccineTypeId;
+    }
+
+    public String getVaccineTypeName() {
+        return vaccineTypeName;
+    }
+
+    public void setVaccineTypeName(String vaccineTypeName) {
+        this.vaccineTypeName = vaccineTypeName;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public Integer getTargetAgeDays() {
+        return targetAgeDays;
+    }
+
+    public void setTargetAgeDays(Integer targetAgeDays) {
+        this.targetAgeDays = targetAgeDays;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof VaccinationDTO)) {
-            return false;
-        }
-
-        VaccinationDTO vaccinationDTO = (VaccinationDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, vaccinationDTO.id);
+        if (this == o) return true;
+        if (!(o instanceof VaccinationDTO)) return false;
+        VaccinationDTO that = (VaccinationDTO) o;
+        return id != null && id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(id);
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "VaccinationDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", type='" + getType() + "'" +
-            ", dateGiven='" + getDateGiven() + "'" +
-            ", sideEffects='" + getSideEffects() + "'" +
-            ", targetAge=" + getTargetAge() +
-            ", status='" + getStatus() + "'" +
-            ", treatment='" + getTreatment() + "'" +
-            "}";
+        return (
+            "VaccinationDTO{" +
+            "id=" +
+            id +
+            ", name='" +
+            name +
+            '\'' +
+            ", dose='" +
+            dose +
+            '\'' +
+            ", treatment='" +
+            treatment +
+            '\'' +
+            ", routeOfAdministration='" +
+            routeOfAdministration +
+            '\'' +
+            ", vaccineTypeId=" +
+            vaccineTypeId +
+            ", vaccineTypeName='" +
+            vaccineTypeName +
+            '\'' +
+            ", groupId=" +
+            groupId +
+            ", groupName='" +
+            groupName +
+            '\'' +
+            ", targetAgeDays=" +
+            targetAgeDays +
+            '}'
+        );
     }
 }

@@ -59,6 +59,11 @@ public class HealthWorker implements Serializable {
     @JsonIgnoreProperties(value = { "parent", "child", "schedule", "healthWorker" }, allowSetters = true)
     private Set<Appointment> appointments = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vaccination_center_id")
+    @JsonIgnoreProperties(value = { "healthWorkers" }, allowSetters = true)
+    private VaccinationCenter vaccinationCenter;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -222,39 +227,66 @@ public class HealthWorker implements Serializable {
         return this;
     }
 
+    public VaccinationCenter getVaccinationCenter() {
+        return this.vaccinationCenter;
+    }
+
+    public void setVaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
+    }
+
+    public HealthWorker vaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.setVaccinationCenter(vaccinationCenter);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof HealthWorker)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (!(o instanceof HealthWorker)) return false;
         return getId() != null && getId().equals(((HealthWorker) o).getId());
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "HealthWorker{" +
-            "id=" + getId() +
-            ", username='" + getUsername() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", age=" + getAge() +
-            ", name='" + getName() + "'" +
-            ", gender='" + getGender() + "'" +
-            ", location='" + getLocation() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", role='" + getRole() + "'" +
-            "}";
+        return (
+            "HealthWorker{" +
+            "id=" +
+            getId() +
+            ", username='" +
+            getUsername() +
+            "'" +
+            ", password='" +
+            getPassword() +
+            "'" +
+            ", phone='" +
+            getPhone() +
+            "'" +
+            ", age=" +
+            getAge() +
+            ", name='" +
+            getName() +
+            "'" +
+            ", gender='" +
+            getGender() +
+            "'" +
+            ", location='" +
+            getLocation() +
+            "'" +
+            ", email='" +
+            getEmail() +
+            "'" +
+            ", role='" +
+            getRole() +
+            "'" +
+            "}"
+        );
     }
 }

@@ -1,4 +1,3 @@
-// ✅ Child.java - محدث بالكامل
 package com.bzu.smartvax.domain;
 
 import jakarta.persistence.*;
@@ -30,7 +29,13 @@ public class Child implements Serializable {
     @JoinColumn(name = "health_record_id")
     private HealthRecord healthRecord;
 
-    // Getters and Setters
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vaccination_center_id")
+    @org.hibernate.annotations.OnDelete(action = org.hibernate.annotations.OnDeleteAction.SET_NULL)
+    private VaccinationCenter vaccinationCenter;
+
+    // === Getters and Setters ===
+
     public String getId() {
         return id;
     }
@@ -87,7 +92,16 @@ public class Child implements Serializable {
         this.healthRecord = healthRecord;
     }
 
-    // ✅ Builder-style methods
+    public VaccinationCenter getVaccinationCenter() {
+        return vaccinationCenter;
+    }
+
+    public void setVaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
+    }
+
+    // === Builder-style methods ===
+
     public Child id(String id) {
         this.setId(id);
         return this;
@@ -110,6 +124,11 @@ public class Child implements Serializable {
 
     public Child healthRecord(HealthRecord healthRecord) {
         this.setHealthRecord(healthRecord);
+        return this;
+    }
+
+    public Child vaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.setVaccinationCenter(vaccinationCenter);
         return this;
     }
 }

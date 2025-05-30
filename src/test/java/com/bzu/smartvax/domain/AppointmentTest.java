@@ -8,6 +8,7 @@ import static com.bzu.smartvax.domain.ScheduleVaccinationTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bzu.smartvax.web.rest.TestUtil;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class AppointmentTest {
@@ -51,15 +52,18 @@ class AppointmentTest {
     }
 
     @Test
-    void scheduleTest() {
+    void schedulesTest() {
         Appointment appointment = getAppointmentRandomSampleGenerator();
-        ScheduleVaccination scheduleVaccinationBack = getScheduleVaccinationRandomSampleGenerator();
+        ScheduleVaccination schedule1 = getScheduleVaccinationRandomSampleGenerator();
+        ScheduleVaccination schedule2 = getScheduleVaccinationRandomSampleGenerator();
 
-        appointment.setSchedule(scheduleVaccinationBack);
-        assertThat(appointment.getSchedule()).isEqualTo(scheduleVaccinationBack);
+        List<ScheduleVaccination> scheduleList = List.of(schedule1, schedule2);
 
-        appointment.schedule(null);
-        assertThat(appointment.getSchedule()).isNull();
+        appointment.setSchedules(scheduleList);
+        assertThat(appointment.getSchedules()).isEqualTo(scheduleList);
+
+        appointment.setSchedules(null);
+        assertThat(appointment.getSchedules()).isNull();
     }
 
     @Test

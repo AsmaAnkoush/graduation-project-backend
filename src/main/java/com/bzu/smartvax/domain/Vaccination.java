@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,21 +26,22 @@ public class Vaccination implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "type")
-    private String type;
-
-    @Column(name = "side_effects")
-    private String sideEffects;
-
-    @Column(name = "target_age")
-    private Integer targetAge;
-
-    @NotNull
-    @Column(name = "status", nullable = false)
-    private String status;
+    @Column(name = "dose")
+    private String dose;
 
     @Column(name = "treatment")
     private String treatment;
+
+    @Column(name = "route_of_administration")
+    private String routeOfAdministration;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "vaccine_type_id", nullable = false)
+    private VaccineType vaccineType;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "group_id", nullable = false)
+    private VaccinationGroup group;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccination")
     @JsonIgnoreProperties(value = { "parent", "vaccination" }, allowSetters = true)
@@ -51,15 +51,8 @@ public class Vaccination implements Serializable {
     @JsonIgnoreProperties(value = { "appointments", "child", "vaccination" }, allowSetters = true)
     private Set<ScheduleVaccination> scheduleVaccinations = new HashSet<>();
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-
     public Long getId() {
-        return this.id;
-    }
-
-    public Vaccination id(Long id) {
-        this.setId(id);
-        return this;
+        return id;
     }
 
     public void setId(Long id) {
@@ -67,85 +60,55 @@ public class Vaccination implements Serializable {
     }
 
     public String getName() {
-        return this.name;
-    }
-
-    public Vaccination name(String name) {
-        this.setName(name);
-        return this;
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getType() {
-        return this.type;
+    public String getDose() {
+        return dose;
     }
 
-    public Vaccination type(String type) {
-        this.setType(type);
-        return this;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getSideEffects() {
-        return this.sideEffects;
-    }
-
-    public Vaccination sideEffects(String sideEffects) {
-        this.setSideEffects(sideEffects);
-        return this;
-    }
-
-    public void setSideEffects(String sideEffects) {
-        this.sideEffects = sideEffects;
-    }
-
-    public Integer getTargetAge() {
-        return this.targetAge;
-    }
-
-    public Vaccination targetAge(Integer targetAge) {
-        this.setTargetAge(targetAge);
-        return this;
-    }
-
-    public void setTargetAge(Integer targetAge) {
-        this.targetAge = targetAge;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public Vaccination status(String status) {
-        this.setStatus(status);
-        return this;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setDose(String dose) {
+        this.dose = dose;
     }
 
     public String getTreatment() {
-        return this.treatment;
-    }
-
-    public Vaccination treatment(String treatment) {
-        this.setTreatment(treatment);
-        return this;
+        return treatment;
     }
 
     public void setTreatment(String treatment) {
         this.treatment = treatment;
     }
 
+    public String getRouteOfAdministration() {
+        return routeOfAdministration;
+    }
+
+    public void setRouteOfAdministration(String routeOfAdministration) {
+        this.routeOfAdministration = routeOfAdministration;
+    }
+
+    public VaccineType getVaccineType() {
+        return vaccineType;
+    }
+
+    public void setVaccineType(VaccineType vaccineType) {
+        this.vaccineType = vaccineType;
+    }
+
+    public VaccinationGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(VaccinationGroup group) {
+        this.group = group;
+    }
+
     public Set<Feedback> getFeedbacks() {
-        return this.feedbacks;
+        return feedbacks;
     }
 
     public void setFeedbacks(Set<Feedback> feedbacks) {
@@ -158,8 +121,86 @@ public class Vaccination implements Serializable {
         this.feedbacks = feedbacks;
     }
 
-    public Vaccination feedbacks(Set<Feedback> feedbacks) {
-        this.setFeedbacks(feedbacks);
+    public Set<ScheduleVaccination> getScheduleVaccinations() {
+        return scheduleVaccinations;
+    }
+
+    public void setScheduleVaccinations(Set<ScheduleVaccination> scheduleVaccinations) {
+        if (this.scheduleVaccinations != null) {
+            this.scheduleVaccinations.forEach(i -> i.setVaccination(null));
+        }
+        if (scheduleVaccinations != null) {
+            scheduleVaccinations.forEach(i -> i.setVaccination(this));
+        }
+        this.scheduleVaccinations = scheduleVaccinations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Vaccination)) return false;
+        return id != null && id.equals(((Vaccination) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return (
+            "Vaccination{" +
+            "id=" +
+            id +
+            ", name='" +
+            name +
+            '\'' +
+            ", dose='" +
+            dose +
+            '\'' +
+            ", treatment='" +
+            treatment +
+            '\'' +
+            ", routeOfAdministration='" +
+            routeOfAdministration +
+            '\'' +
+            '}'
+        );
+    }
+
+    public Vaccination id(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public Vaccination name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Vaccination dose(String dose) {
+        this.dose = dose;
+        return this;
+    }
+
+    public Vaccination treatment(String treatment) {
+        this.treatment = treatment;
+        return this;
+    }
+
+    public Vaccination routeOfAdministration(String routeOfAdministration) {
+        this.routeOfAdministration = routeOfAdministration;
+        return this;
+    }
+
+    public Vaccination vaccineType(VaccineType vaccineType) {
+        this.vaccineType = vaccineType;
+        return this;
+    }
+
+    public Vaccination group(VaccinationGroup group) {
+        this.group = group;
         return this;
     }
 
@@ -175,22 +216,8 @@ public class Vaccination implements Serializable {
         return this;
     }
 
-    public Set<ScheduleVaccination> getScheduleVaccinations() {
-        return this.scheduleVaccinations;
-    }
-
-    public void setScheduleVaccinations(Set<ScheduleVaccination> scheduleVaccinations) {
-        if (this.scheduleVaccinations != null) {
-            this.scheduleVaccinations.forEach(i -> i.setVaccination(null));
-        }
-        if (scheduleVaccinations != null) {
-            scheduleVaccinations.forEach(i -> i.setVaccination(this));
-        }
-        this.scheduleVaccinations = scheduleVaccinations;
-    }
-
-    public Vaccination scheduleVaccinations(Set<ScheduleVaccination> scheduleVaccinations) {
-        this.setScheduleVaccinations(scheduleVaccinations);
+    public Vaccination feedbacks(Set<Feedback> feedbacks) {
+        this.setFeedbacks(feedbacks);
         return this;
     }
 
@@ -206,36 +233,8 @@ public class Vaccination implements Serializable {
         return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Vaccination)) {
-            return false;
-        }
-        return getId() != null && getId().equals(((Vaccination) o).getId());
-    }
-
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "Vaccination{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", type='" + getType() + "'" +
-            ", sideEffects='" + getSideEffects() + "'" +
-            ", targetAge=" + getTargetAge() +
-            ", status='" + getStatus() + "'" +
-            ", treatment='" + getTreatment() + "'" +
-            "}";
+    public Vaccination scheduleVaccinations(Set<ScheduleVaccination> scheduleVaccinations) {
+        this.setScheduleVaccinations(scheduleVaccinations);
+        return this;
     }
 }
