@@ -26,26 +26,21 @@ public class VaccinationGeneratorService {
     }
 
     public void generateVaccinationsForChild(Child child) {
-        // ✅ جلب كل التطعيمات الأساسية من قاعدة البيانات
+        // ✅ جلب كل التطعيمات مع المجموعة المرتبطة فيها
         List<Vaccination> defaultVaccines = vaccinationRepository.findAll();
 
         for (Vaccination vaccine : defaultVaccines) {
-            // ✅ نأخذ targetAge بالأشهر ونحسب موعد التطعيم
-            Integer targetAgeInMonths = vaccine.getTargetAge();
+            int days = vaccine.getGroup().getTargetAgeDays(); // ✅ من vaccination_group
+            LocalDate scheduledDate = child.getDob().plusDays(days);
 
-            if (targetAgeInMonths != null) {
-                LocalDate scheduledDate = child.getDob().plusMonths(targetAgeInMonths);
+            ScheduleVaccination schedule = new ScheduleVaccination();
+            schedule.setChild(child);
+            schedule.setVaccination(vaccine);
+            schedule.setScheduledDate(scheduledDate); // ✅ لا تغير الاسم
+            schedule.setStatus("PENDING");
+            schedule.setVaccinationGroup(vaccine.getGroup()); // ✅ السطر الجديد
 
-                // ✅ إنشاء موعد مجدول
-                ScheduleVaccination schedule = new ScheduleVaccination();
-                schedule.setChild(child);
-                schedule.setVaccination(vaccine);
-                schedule.setScheduledDate(child.getDob().plusDays(vaccine.getTargetAge()));
-                schedule.setStatus("SCHEDULED");
-
-                // ✅ حفظ في قاعدة البيانات
-                scheduleVaccinationRepository.save(schedule);
-            }
+            scheduleVaccinationRepository.save(schedule);
         }
     }
 }

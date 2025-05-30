@@ -36,6 +36,10 @@ public class HealthWorkerDTO implements Serializable {
     @NotNull
     private String role;
 
+    private VaccinationCenterDTO vaccinationCenter;
+
+    // Getters and setters
+
     public Long getId() {
         return id;
     }
@@ -116,41 +120,62 @@ public class HealthWorkerDTO implements Serializable {
         this.role = role;
     }
 
+    public VaccinationCenterDTO getVaccinationCenter() {
+        return vaccinationCenter;
+    }
+
+    public void setVaccinationCenter(VaccinationCenterDTO vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof HealthWorkerDTO)) {
-            return false;
-        }
-
-        HealthWorkerDTO healthWorkerDTO = (HealthWorkerDTO) o;
-        if (this.id == null) {
-            return false;
-        }
-        return Objects.equals(this.id, healthWorkerDTO.id);
+        if (this == o) return true;
+        if (!(o instanceof HealthWorkerDTO)) return false;
+        HealthWorkerDTO that = (HealthWorkerDTO) o;
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id);
+        return Objects.hash(getId());
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "HealthWorkerDTO{" +
-            "id=" + getId() +
-            ", username='" + getUsername() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", phone='" + getPhone() + "'" +
-            ", age=" + getAge() +
-            ", name='" + getName() + "'" +
-            ", gender='" + getGender() + "'" +
-            ", location='" + getLocation() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", role='" + getRole() + "'" +
-            "}";
+        return (
+            "HealthWorkerDTO{" +
+            "id=" +
+            getId() +
+            ", username='" +
+            getUsername() +
+            '\'' +
+            ", password='" +
+            getPassword() +
+            '\'' +
+            ", phone='" +
+            getPhone() +
+            '\'' +
+            ", age=" +
+            getAge() +
+            ", name='" +
+            getName() +
+            '\'' +
+            ", gender='" +
+            getGender() +
+            '\'' +
+            ", location='" +
+            getLocation() +
+            '\'' +
+            ", email='" +
+            getEmail() +
+            '\'' +
+            ", role='" +
+            getRole() +
+            '\'' +
+            ", vaccinationCenter=" +
+            (vaccinationCenter != null ? vaccinationCenter.getId() : "null") +
+            '}'
+        );
     }
 }

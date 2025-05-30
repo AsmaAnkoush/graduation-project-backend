@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bzu.smartvax.web.rest.TestUtil;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -32,21 +33,33 @@ class ScheduleVaccinationTest {
         ScheduleVaccination scheduleVaccination = getScheduleVaccinationRandomSampleGenerator();
         Appointment appointmentBack = getAppointmentRandomSampleGenerator();
 
-        scheduleVaccination.addAppointments(appointmentBack);
-        assertThat(scheduleVaccination.getAppointments()).containsOnly(appointmentBack);
-        assertThat(appointmentBack.getSchedule()).isEqualTo(scheduleVaccination);
+        // ✅ simulate the link by adding to both sides manually
+        scheduleVaccination.getAppointments().add(appointmentBack);
+        appointmentBack.setSchedules(List.of(scheduleVaccination));
 
-        scheduleVaccination.removeAppointments(appointmentBack);
+        assertThat(scheduleVaccination.getAppointments()).containsOnly(appointmentBack);
+        assertThat(appointmentBack.getSchedules()).contains(scheduleVaccination);
+
+        // remove
+        scheduleVaccination.getAppointments().remove(appointmentBack);
+        appointmentBack.setSchedules(List.of());
+
         assertThat(scheduleVaccination.getAppointments()).doesNotContain(appointmentBack);
-        assertThat(appointmentBack.getSchedule()).isNull();
+        assertThat(appointmentBack.getSchedules()).doesNotContain(scheduleVaccination);
 
-        scheduleVaccination.appointments(new HashSet<>(Set.of(appointmentBack)));
+        // bulk set
+        scheduleVaccination.setAppointments(new HashSet<>(Set.of(appointmentBack)));
+        appointmentBack.setSchedules(List.of(scheduleVaccination));
+
         assertThat(scheduleVaccination.getAppointments()).containsOnly(appointmentBack);
-        assertThat(appointmentBack.getSchedule()).isEqualTo(scheduleVaccination);
+        assertThat(appointmentBack.getSchedules()).contains(scheduleVaccination);
 
+        // clear all
         scheduleVaccination.setAppointments(new HashSet<>());
+        appointmentBack.setSchedules(List.of());
+
         assertThat(scheduleVaccination.getAppointments()).doesNotContain(appointmentBack);
-        assertThat(appointmentBack.getSchedule()).isNull();
+        assertThat(appointmentBack.getSchedules()).doesNotContain(scheduleVaccination);
     }
 
     @Test

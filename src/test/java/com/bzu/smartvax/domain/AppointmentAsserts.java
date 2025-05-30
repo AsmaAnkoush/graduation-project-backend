@@ -62,7 +62,7 @@ public class AppointmentAsserts {
             .as("Verify Appointment relationships")
             .satisfies(a -> assertThat(a.getParent()).as("check parent").isEqualTo(expected.getParent()))
             .satisfies(a -> assertThat(a.getChild()).as("check child").isEqualTo(expected.getChild()))
-            .satisfies(a -> assertThat(a.getSchedule()).as("check schedule").isEqualTo(expected.getSchedule()))
+            .satisfies(a -> assertThat(a.getSchedules()).as("check schedules").isEqualTo(expected.getSchedules()))
             .satisfies(a -> assertThat(a.getHealthWorker()).as("check healthWorker").isEqualTo(expected.getHealthWorker()));
     }
 }

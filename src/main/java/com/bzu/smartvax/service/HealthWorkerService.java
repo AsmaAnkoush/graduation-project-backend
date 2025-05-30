@@ -109,4 +109,8 @@ public class HealthWorkerService {
         LOG.debug("Request to delete HealthWorker : {}", id);
         healthWorkerRepository.deleteById(id);
     }
+
+    public HealthWorkerDTO mapToDto(HealthWorker hw) {
+        return healthWorkerMapper.toDto(hw);
+    }
 }

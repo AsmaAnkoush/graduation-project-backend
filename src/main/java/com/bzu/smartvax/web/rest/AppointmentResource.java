@@ -1,13 +1,15 @@
 package com.bzu.smartvax.web.rest;
 
 import com.bzu.smartvax.domain.Appointment;
-import com.bzu.smartvax.domain.Child;
+import com.bzu.smartvax.domain.Users;
 import com.bzu.smartvax.repository.AppointmentRepository;
+import com.bzu.smartvax.repository.UsersRepository;
 import com.bzu.smartvax.service.AppointmentService;
 import com.bzu.smartvax.service.dto.AppointmentDTO;
 import com.bzu.smartvax.service.dto.ChildDTO;
 import com.bzu.smartvax.service.dto.ScheduleVaccinationDTO;
 import com.bzu.smartvax.service.dto.VaccinationDTO;
+import com.bzu.smartvax.service.mapper.AppointmentMapper;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -51,18 +53,22 @@ public class AppointmentResource {
 
     private final AppointmentRepository appointmentRepository;
 
-    public AppointmentResource(AppointmentService appointmentService, AppointmentRepository appointmentRepository) {
+    private final AppointmentMapper appointmentMapper;
+
+    private final UsersRepository usersRepository;
+
+    public AppointmentResource(
+        AppointmentService appointmentService,
+        AppointmentRepository appointmentRepository,
+        AppointmentMapper appointmentMapper,
+        UsersRepository usersRepository
+    ) {
         this.appointmentService = appointmentService;
         this.appointmentRepository = appointmentRepository;
+        this.appointmentMapper = appointmentMapper;
+        this.usersRepository = usersRepository;
     }
 
-    /**
-     * {@code POST  /appointments} : Create a new appointment.
-     *
-     * @param appointmentDTO the appointmentDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new appointmentDTO, or with status {@code 400 (Bad Request)} if the appointment has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
     public ResponseEntity<AppointmentDTO> createAppointment(@Valid @RequestBody AppointmentDTO appointmentDTO) throws URISyntaxException {
         LOG.debug("REST request to save Appointment : {}", appointmentDTO);
@@ -75,16 +81,6 @@ public class AppointmentResource {
             .body(appointmentDTO);
     }
 
-    /**
-     * {@code PUT  /appointments/:id} : Updates an existing appointment.
-     *
-     * @param id the id of the appointmentDTO to save.
-     * @param appointmentDTO the appointmentDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated appointmentDTO,
-     * or with status {@code 400 (Bad Request)} if the appointmentDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the appointmentDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentDTO> updateAppointment(
         @PathVariable(value = "id", required = false) final Long id,
@@ -108,17 +104,6 @@ public class AppointmentResource {
             .body(appointmentDTO);
     }
 
-    /**
-     * {@code PATCH  /appointments/:id} : Partial updates given fields of an existing appointment, field will ignore if it is null
-     *
-     * @param id the id of the appointmentDTO to save.
-     * @param appointmentDTO the appointmentDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated appointmentDTO,
-     * or with status {@code 400 (Bad Request)} if the appointmentDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the appointmentDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the appointmentDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<AppointmentDTO> partialUpdateAppointment(
         @PathVariable(value = "id", required = false) final Long id,
@@ -144,12 +129,6 @@ public class AppointmentResource {
         );
     }
 
-    /**
-     * {@code GET  /appointments} : get all the appointments.
-     *
-     * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of appointments in body.
-     */
     @GetMapping("")
     public ResponseEntity<List<AppointmentDTO>> getAllAppointments(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of Appointments");
@@ -158,12 +137,6 @@ public class AppointmentResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    /**
-     * {@code GET  /appointments/:id} : get the "id" appointment.
-     *
-     * @param id the id of the appointmentDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the appointmentDTO, or with status {@code 404 (Not Found)}.
-     */
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDTO> getAppointment(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Appointment : {}", id);
@@ -171,12 +144,6 @@ public class AppointmentResource {
         return ResponseUtil.wrapOrNotFound(appointmentDTO);
     }
 
-    /**
-     * {@code DELETE  /appointments/:id} : delete the "id" appointment.
-     *
-     * @param id the id of the appointmentDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAppointment(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Appointment : {}", id);
@@ -184,6 +151,29 @@ public class AppointmentResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/by-center/{centerId}")
+    public ResponseEntity<List<AppointmentDTO>> getAppointmentsByCenter(@PathVariable Long centerId) {
+        List<Appointment> appointments = appointmentRepository.findByChild_VaccinationCenter_Id(centerId);
+        List<AppointmentDTO> dtos = appointments.stream().map(appointmentMapper::toDto).toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/by-parent/{parentId}")
+    public ResponseEntity<List<AppointmentDTO>> getAppointmentsByParent(@PathVariable Long parentId) {
+        List<Appointment> appointments = appointmentRepository.findByParent_Id(parentId);
+        List<AppointmentDTO> dtos = appointments.stream().map(appointmentMapper::toDto).toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/parent-id/by-user/{userId}")
+    public ResponseEntity<Long> getParentIdByUserId(@PathVariable Long userId) {
+        Optional<Users> user = usersRepository.findById(userId);
+        if (user.isPresent() && "PARENT".equalsIgnoreCase(user.get().getRole())) {
+            return ResponseEntity.ok(user.get().getReferenceId());
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/health-worker/{id}/appointments-by-date")
@@ -203,27 +193,29 @@ public class AppointmentResource {
         List<AppointmentDTO> dtos = appointments
             .stream()
             .map(app -> {
-                AppointmentDTO dto = new AppointmentDTO();
-                dto.setId(app.getId());
-                dto.setStatus(app.getStatus());
-                dto.setAppointmentDate(app.getAppointmentDate());
+                AppointmentDTO dto = appointmentMapper.toDto(app);
 
-                ChildDTO childDTO = new ChildDTO();
-                childDTO.setId(app.getChild().getId());
-                childDTO.setName(app.getChild().getName());
-                dto.setChild(childDTO);
+                List<ScheduleVaccinationDTO> scheduleDTOs = app
+                    .getSchedules()
+                    .stream()
+                    .map(schedule -> {
+                        ScheduleVaccinationDTO sDto = new ScheduleVaccinationDTO();
+                        sDto.setId(schedule.getId());
+                        sDto.setScheduledDate(schedule.getScheduledDate());
+                        sDto.setStatus(schedule.getStatus());
 
-                VaccinationDTO vaccinationDTO = new VaccinationDTO();
-                vaccinationDTO.setId(app.getSchedule().getVaccination().getId());
-                vaccinationDTO.setName(app.getSchedule().getVaccination().getName());
+                        if (schedule.getVaccination() != null) {
+                            VaccinationDTO vDto = new VaccinationDTO();
+                            vDto.setId(schedule.getVaccination().getId());
+                            vDto.setName(schedule.getVaccination().getName());
+                            sDto.setVaccination(vDto);
+                        }
 
-                ScheduleVaccinationDTO scheduleDTO = new ScheduleVaccinationDTO();
-                scheduleDTO.setId(app.getSchedule().getId());
-                scheduleDTO.setScheduledDate(app.getSchedule().getScheduledDate());
-                scheduleDTO.setStatus(app.getSchedule().getStatus());
-                scheduleDTO.setVaccination(vaccinationDTO);
+                        return sDto;
+                    })
+                    .toList();
 
-                dto.setSchedule(scheduleDTO);
+                dto.setScheduleVaccinations(scheduleDTOs);
 
                 return dto;
             })

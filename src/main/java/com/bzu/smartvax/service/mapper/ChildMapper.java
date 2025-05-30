@@ -1,25 +1,36 @@
-// ✅ ChildMapper.java (مُعدل لإضافة partialUpdate)
 package com.bzu.smartvax.service.mapper;
 
 import com.bzu.smartvax.domain.Child;
 import com.bzu.smartvax.domain.HealthRecord;
+import com.bzu.smartvax.domain.VaccinationCenter;
 import com.bzu.smartvax.service.dto.ChildDTO;
 import com.bzu.smartvax.service.dto.HealthRecordDTO;
+import com.bzu.smartvax.service.dto.VaccinationCenterDTO;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ChildMapper {
     @Mapping(source = "parent.id", target = "parentId")
     @Mapping(source = "healthRecord", target = "healthRecord")
+    @Mapping(source = "vaccinationCenter", target = "vaccinationCenter", qualifiedByName = "vaccinationCenterId")
     ChildDTO toDto(Child child);
 
     @Mapping(source = "parentId", target = "parent.id")
     @Mapping(source = "healthRecord", target = "healthRecord")
+    @Mapping(source = "vaccinationCenter", target = "vaccinationCenter")
     Child toEntity(ChildDTO childDTO);
 
     @Mapping(target = "parent", ignore = true)
+    @Mapping(target = "vaccinationCenter", ignore = true)
     void partialUpdate(@MappingTarget Child entity, ChildDTO dto);
 
+    // MapStruct helper for VaccinationCenterDTO
+    @Named("vaccinationCenterId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    VaccinationCenterDTO toDtoVaccinationCenterId(VaccinationCenter center);
+
+    // Manual mappers for HealthRecord
     default HealthRecordDTO map(HealthRecord record) {
         if (record == null) return null;
         HealthRecordDTO dto = new HealthRecordDTO();
@@ -44,25 +55,3 @@ public interface ChildMapper {
         return record;
     }
 }
-// ✅ دعم builder-style لـ Child
-// في ملف Child.java أضف التالي داخل الكلاس:
-// public Child id(String id) {
-//     this.setId(id);
-//     return this;
-// }
-// public Child name(String name) {
-//     this.setName(name);
-//     return this;
-// }
-// public Child dob(LocalDate dob) {
-//     this.setDob(dob);
-//     return this;
-// }
-// public Child parent(Parent parent) {
-//     this.setParent(parent);
-//     return this;
-// }
-// public Child healthRecord(HealthRecord healthRecord) {
-//     this.setHealthRecord(healthRecord);
-//     return this;
-// }

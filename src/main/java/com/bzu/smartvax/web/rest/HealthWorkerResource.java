@@ -1,8 +1,12 @@
 package com.bzu.smartvax.web.rest;
 
+import com.bzu.smartvax.domain.HealthWorker;
+import com.bzu.smartvax.domain.Users;
 import com.bzu.smartvax.repository.HealthWorkerRepository;
+import com.bzu.smartvax.repository.UsersRepository;
 import com.bzu.smartvax.service.HealthWorkerService;
 import com.bzu.smartvax.service.dto.HealthWorkerDTO;
+import com.bzu.smartvax.service.mapper.HealthWorkerMapper;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -32,28 +36,28 @@ import tech.jhipster.web.util.ResponseUtil;
 public class HealthWorkerResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(HealthWorkerResource.class);
-
     private static final String ENTITY_NAME = "healthWorker";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final HealthWorkerService healthWorkerService;
-
     private final HealthWorkerRepository healthWorkerRepository;
+    private final UsersRepository usersRepository;
+    private final HealthWorkerMapper healthWorkerMapper;
 
-    public HealthWorkerResource(HealthWorkerService healthWorkerService, HealthWorkerRepository healthWorkerRepository) {
+    public HealthWorkerResource(
+        HealthWorkerService healthWorkerService,
+        HealthWorkerRepository healthWorkerRepository,
+        UsersRepository usersRepository,
+        HealthWorkerMapper healthWorkerMapper
+    ) {
         this.healthWorkerService = healthWorkerService;
         this.healthWorkerRepository = healthWorkerRepository;
+        this.usersRepository = usersRepository;
+        this.healthWorkerMapper = healthWorkerMapper;
     }
 
-    /**
-     * {@code POST  /health-workers} : Create a new healthWorker.
-     *
-     * @param healthWorkerDTO the healthWorkerDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new healthWorkerDTO, or with status {@code 400 (Bad Request)} if the healthWorker has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
     public ResponseEntity<HealthWorkerDTO> createHealthWorker(@Valid @RequestBody HealthWorkerDTO healthWorkerDTO)
         throws URISyntaxException {
@@ -67,16 +71,6 @@ public class HealthWorkerResource {
             .body(healthWorkerDTO);
     }
 
-    /**
-     * {@code PUT  /health-workers/:id} : Updates an existing healthWorker.
-     *
-     * @param id the id of the healthWorkerDTO to save.
-     * @param healthWorkerDTO the healthWorkerDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated healthWorkerDTO,
-     * or with status {@code 400 (Bad Request)} if the healthWorkerDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the healthWorkerDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
     public ResponseEntity<HealthWorkerDTO> updateHealthWorker(
         @PathVariable(value = "id", required = false) final Long id,
@@ -100,17 +94,6 @@ public class HealthWorkerResource {
             .body(healthWorkerDTO);
     }
 
-    /**
-     * {@code PATCH  /health-workers/:id} : Partial updates given fields of an existing healthWorker, field will ignore if it is null
-     *
-     * @param id the id of the healthWorkerDTO to save.
-     * @param healthWorkerDTO the healthWorkerDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated healthWorkerDTO,
-     * or with status {@code 400 (Bad Request)} if the healthWorkerDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the healthWorkerDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the healthWorkerDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<HealthWorkerDTO> partialUpdateHealthWorker(
         @PathVariable(value = "id", required = false) final Long id,
@@ -136,12 +119,6 @@ public class HealthWorkerResource {
         );
     }
 
-    /**
-     * {@code GET  /health-workers} : get all the healthWorkers.
-     *
-     * @param pageable the pagination information.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of healthWorkers in body.
-     */
     @GetMapping("")
     public ResponseEntity<List<HealthWorkerDTO>> getAllHealthWorkers(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of HealthWorkers");
@@ -150,12 +127,6 @@ public class HealthWorkerResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    /**
-     * {@code GET  /health-workers/:id} : get the "id" healthWorker.
-     *
-     * @param id the id of the healthWorkerDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the healthWorkerDTO, or with status {@code 404 (Not Found)}.
-     */
     @GetMapping("/{id}")
     public ResponseEntity<HealthWorkerDTO> getHealthWorker(@PathVariable("id") Long id) {
         LOG.debug("REST request to get HealthWorker : {}", id);
@@ -163,12 +134,6 @@ public class HealthWorkerResource {
         return ResponseUtil.wrapOrNotFound(healthWorkerDTO);
     }
 
-    /**
-     * {@code DELETE  /health-workers/:id} : delete the "id" healthWorker.
-     *
-     * @param id the id of the healthWorkerDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHealthWorker(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete HealthWorker : {}", id);
@@ -176,5 +141,25 @@ public class HealthWorkerResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    // ✅ Updated to use orElseThrow
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<HealthWorkerDTO> getHealthWorkerByUserReferenceId(@PathVariable Long userId) {
+        LOG.debug("REST request to get HealthWorker by userId: {}", userId);
+
+        Users user = usersRepository
+            .findById(userId)
+            .orElseThrow(() -> new BadRequestAlertException("User not found", "users", "idnotfound"));
+
+        if (!"HEALTH_WORKER".equalsIgnoreCase(user.getRole())) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Long refId = user.getReferenceId();
+
+        Optional<HealthWorkerDTO> dto = healthWorkerRepository.findById(refId).map(healthWorkerMapper::toDto);
+
+        return ResponseUtil.wrapOrNotFound(dto);
     }
 }
