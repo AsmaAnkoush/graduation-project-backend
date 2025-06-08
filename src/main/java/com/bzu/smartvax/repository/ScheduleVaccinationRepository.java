@@ -1,6 +1,7 @@
 package com.bzu.smartvax.repository;
 
 import com.bzu.smartvax.domain.ScheduleVaccination;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ScheduleVaccinationRepository extends JpaRepository<ScheduleVaccination, Long> {
     List<ScheduleVaccination> findByChildId(String childId);
+    List<ScheduleVaccination> findByChild_IdAndScheduledDateAfter(String childId, LocalDate date);
 
     @Query(
         """

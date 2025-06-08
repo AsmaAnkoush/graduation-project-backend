@@ -29,6 +29,15 @@ public class VaccinationDTO implements Serializable {
     private Long groupId;
     private String groupName; // NEW
     private Integer targetAgeDays; // NEW
+    private VaccineTypeDTO vaccineType;
+
+    public VaccineTypeDTO getVaccineType() {
+        return vaccineType;
+    }
+
+    public void setVaccineType(VaccineTypeDTO vaccineType) {
+        this.vaccineType = vaccineType;
+    }
 
     public Long getId() {
         return id;

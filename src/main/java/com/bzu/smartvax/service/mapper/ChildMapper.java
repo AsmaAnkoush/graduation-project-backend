@@ -20,6 +20,12 @@ public interface ChildMapper {
     @Mapping(source = "vaccinationCenter", target = "vaccinationCenter")
     Child toEntity(ChildDTO childDTO);
 
+    @Named("childMini")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name") // ✅ تطابق الاسم مع الموجود في ChildDTO
+    ChildDTO toMiniDto(Child child);
+
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "vaccinationCenter", ignore = true)
     void partialUpdate(@MappingTarget Child entity, ChildDTO dto);
