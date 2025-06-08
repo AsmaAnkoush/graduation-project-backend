@@ -18,7 +18,11 @@ public class VaccinationService {
         this.vaccinationMapper = vaccinationMapper;
     }
 
+    //    public Optional<VaccinationDTO> findById(Long id) {
+    //        return vaccinationRepository.findById(id).map(vaccinationMapper::toDto);
+    //    }
+
     public Optional<VaccinationDTO> findById(Long id) {
-        return vaccinationRepository.findById(id).map(vaccinationMapper::toDto);
+        return vaccinationRepository.findByIdWithGroupAndVaccineType(id).map(vaccinationMapper::toDto);
     }
 }

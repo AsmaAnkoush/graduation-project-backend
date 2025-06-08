@@ -1,10 +1,8 @@
 package com.bzu.smartvax.web.rest;
 
-import com.bzu.smartvax.domain.Child;
-import com.bzu.smartvax.domain.HealthRecord;
-import com.bzu.smartvax.domain.Parent;
-import com.bzu.smartvax.domain.Users;
+import com.bzu.smartvax.domain.*;
 import com.bzu.smartvax.repository.ChildRepository;
+import com.bzu.smartvax.repository.CivilAffairsChildRepository;
 import com.bzu.smartvax.repository.ParentRepository;
 import com.bzu.smartvax.repository.UsersRepository;
 import com.bzu.smartvax.service.VaccinationGeneratorService;
@@ -23,19 +21,22 @@ public class ParentRegistrationController {
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
     private final VaccinationGeneratorService vaccinationGeneratorService;
+    private final CivilAffairsChildRepository civilAffairsChildRepository;
 
     public ParentRegistrationController(
         ParentRepository parentRepository,
         ChildRepository childRepository,
         UsersRepository usersRepository,
         PasswordEncoder passwordEncoder,
-        VaccinationGeneratorService vaccinationGeneratorService
+        VaccinationGeneratorService vaccinationGeneratorService,
+        CivilAffairsChildRepository civilAffairsChildRepository
     ) {
         this.parentRepository = parentRepository;
         this.childRepository = childRepository;
         this.usersRepository = usersRepository;
         this.passwordEncoder = passwordEncoder;
         this.vaccinationGeneratorService = vaccinationGeneratorService;
+        this.civilAffairsChildRepository = civilAffairsChildRepository;
     }
 
     @PostMapping("/register-parent")
@@ -66,6 +67,9 @@ public class ParentRegistrationController {
         parent.setUser(user);
         parentRepository.save(parent);
 
+        user.setReferenceId(parent.getId()); // نفترض أن Users يحتوي على حقل referenceId من نوع Long
+        usersRepository.save(user);
+
         // ✅ 3. إنشاء السجل الصحي الفارغ مؤقتًا
         HealthRecord healthRecord = new HealthRecord();
         healthRecord.setSensitivity(null);
@@ -74,6 +78,14 @@ public class ParentRegistrationController {
         healthRecord.setGeneticDiseases(null);
         healthRecord.setBloodType(null);
 
+        // ✅ جلب سجل الطفل من الأحوال المدنية
+        CivilAffairsChild civilRecord = civilAffairsChildRepository.findById(dto.childId).orElse(null);
+        if (civilRecord == null) {
+            return ResponseEntity.status(404).body("❌ الطفل غير موجود في السجل المدني");
+        }
+
+        Long centerId = civilRecord.getVaccinationCenter() != null ? civilRecord.getVaccinationCenter().getId() : null;
+
         // ✅ 4. إنشاء الطفل وربطه بالأب والسجل الصحي
         Child child = new Child();
         child.setId(dto.childId);
@@ -81,6 +93,13 @@ public class ParentRegistrationController {
         child.setDob(LocalDate.parse(dto.childDob));
         child.setParent(parent);
         child.setHealthRecord(healthRecord);
+
+        if (centerId != null) {
+            VaccinationCenter center = new VaccinationCenter();
+            center.setId(centerId);
+            child.setVaccinationCenter(center); // ✅ ربط الطفل باستخدام id فقط
+        }
+
         childRepository.save(child);
 
         // ✅ 5. توليد مواعيد التطعيم تلقائيًا بناءً على تاريخ ميلاد الطفل

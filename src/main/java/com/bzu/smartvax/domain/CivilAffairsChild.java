@@ -26,6 +26,10 @@ public class CivilAffairsChild implements Serializable {
     @Column(name = "parent_phone", nullable = false, length = 10)
     private String phone; // ✅ هذا هو الاسم الصحيح للعمود
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vaccination_center_id")
+    private VaccinationCenter vaccinationCenter;
+
     // --- Getters and Setters ---
 
     public String getId() {
@@ -66,5 +70,13 @@ public class CivilAffairsChild implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public VaccinationCenter getVaccinationCenter() {
+        return vaccinationCenter;
+    }
+
+    public void setVaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
     }
 }

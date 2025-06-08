@@ -29,6 +29,7 @@ public class VaccinationDTO implements Serializable {
     private Long groupId;
     private String groupName; // NEW
     private Integer targetAgeDays; // NEW
+    private String sideEffects;
 
     public Long getId() {
         return id;
@@ -108,6 +109,14 @@ public class VaccinationDTO implements Serializable {
 
     public void setTargetAgeDays(Integer targetAgeDays) {
         this.targetAgeDays = targetAgeDays;
+    }
+
+    public String getSideEffects() {
+        return sideEffects;
+    }
+
+    public void setSideEffects(String sideEffects) {
+        this.sideEffects = sideEffects;
     }
 
     @Override

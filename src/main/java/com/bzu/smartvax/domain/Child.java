@@ -131,4 +131,15 @@ public class Child implements Serializable {
         this.setVaccinationCenter(vaccinationCenter);
         return this;
     }
+
+    public void setVaccinationCenterId(Long centerId) {
+        if (centerId == null) {
+            this.vaccinationCenter = null;
+            return;
+        }
+        if (this.vaccinationCenter == null) {
+            this.vaccinationCenter = new VaccinationCenter();
+        }
+        this.vaccinationCenter.setId(centerId);
+    }
 }
