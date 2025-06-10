@@ -31,6 +31,16 @@ public class AuthController {
 
         try {
             Users user = usersRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+            System.out.println(":--------------------------------------");
+            System.out.println("🔵 محاولة تسجيل الدخول:");
+            System.out.println("👤 Username: " + username);
+            System.out.println("🔑 Raw Password (input): " + password);
+            System.out.println(":--------------------------------------");
+            System.out.println("user.getusername  : " + user.getUsername());
+            System.out.println("user.getPassword() : " + user.getPassword());
+            System.out.println(":--------------------------------------");
+            System.out.println(":::::" + passwordEncoder.matches(password, user.getPassword()));
+            System.out.println(":encode entered pass::::" + passwordEncoder.encode(password));
 
             if (passwordEncoder.matches(password, user.getPassword())) {
                 session.setAttribute("user", user);

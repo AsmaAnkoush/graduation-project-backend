@@ -15,11 +15,13 @@ public interface VaccinationMapper extends EntityMapper<VaccinationDTO, Vaccinat
     @Mapping(source = "group.id", target = "groupId")
     @Mapping(source = "group.name", target = "groupName")
     @Mapping(source = "group.targetAgeDays", target = "targetAgeDays")
+    @Mapping(source = "sideEffects", target = "sideEffects")
     VaccinationDTO toDto(Vaccination vaccination);
 
     @Override
     @Mapping(source = "vaccineTypeId", target = "vaccineType.id")
     @Mapping(source = "groupId", target = "group.id")
+    @Mapping(source = "sideEffects", target = "sideEffects")
     Vaccination toEntity(VaccinationDTO dto);
 
     default Vaccination fromId(Long id) {
