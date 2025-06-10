@@ -9,10 +9,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Appointment} and its DTO {@link AppointmentDTO}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { ChildMapper.class })
 public interface AppointmentMapper extends EntityMapper<AppointmentDTO, Appointment> {
     @Mapping(target = "parent", source = "parent", qualifiedByName = "parentId")
-    @Mapping(target = "child", source = "child", qualifiedByName = "childId")
+    @Mapping(target = "child", source = "child", qualifiedByName = "childMini") // ✅ استخدم mini mapper لعرض الاسم والرقم
     @Mapping(target = "healthWorker", source = "healthWorker", qualifiedByName = "healthWorkerId")
     @Mapping(target = "vaccinationCenter", source = "vaccinationCenter", qualifiedByName = "vaccinationCenterFull")
     @Mapping(target = "requestedNewCenter", source = "requestedNewCenter", qualifiedByName = "vaccinationCenterFull")
@@ -36,11 +36,6 @@ public interface AppointmentMapper extends EntityMapper<AppointmentDTO, Appointm
     @Mapping(target = "id", source = "id")
     ParentDTO toDtoParentId(Parent parent);
 
-    @Named("childId")
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "id", source = "id")
-    ChildDTO toDtoChildId(Child child);
-
     @Named("healthWorkerId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
@@ -58,7 +53,7 @@ public interface AppointmentMapper extends EntityMapper<AppointmentDTO, Appointm
     @Mapping(target = "id", source = "id")
     VaccinationCenter toVaccinationCenterFromId(VaccinationCenterDTO dto);
 
-    // ========== ScheduleVaccination Mapper ==========
+    // ========== ScheduleVaccination Mapper ===========
 
     @Named("toScheduleVaccinationDtoList")
     default List<ScheduleVaccinationDTO> toScheduleVaccinationDtoList(List<ScheduleVaccination> schedules) {
@@ -78,6 +73,14 @@ public interface AppointmentMapper extends EntityMapper<AppointmentDTO, Appointm
             VaccinationDTO vaccinationDTO = new VaccinationDTO();
             vaccinationDTO.setId(schedule.getVaccination().getId());
             vaccinationDTO.setName(schedule.getVaccination().getName());
+
+            if (schedule.getVaccination().getVaccineType() != null) {
+                VaccineTypeDTO typeDTO = new VaccineTypeDTO();
+                typeDTO.setId(schedule.getVaccination().getVaccineType().getId());
+                typeDTO.setName(schedule.getVaccination().getVaccineType().getName());
+                vaccinationDTO.setVaccineType(typeDTO);
+            }
+
             dto.setVaccination(vaccinationDTO);
         }
 
