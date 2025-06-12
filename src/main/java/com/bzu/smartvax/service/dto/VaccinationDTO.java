@@ -23,21 +23,16 @@ public class VaccinationDTO implements Serializable {
 
     // ✅ معلومات نوع اللقاح
     private Long vaccineTypeId;
-    private String vaccineTypeName; // NEW
+    private String vaccineTypeName;
 
     // ✅ معلومات مجموعة التطعيم
     private Long groupId;
-    private String groupName; // NEW
-    private Integer targetAgeDays; // NEW
+    private String groupName;
+    private Integer targetAgeDays;
+
+    private String sideEffects;
+
     private VaccineTypeDTO vaccineType;
-
-    public VaccineTypeDTO getVaccineType() {
-        return vaccineType;
-    }
-
-    public void setVaccineType(VaccineTypeDTO vaccineType) {
-        this.vaccineType = vaccineType;
-    }
 
     public Long getId() {
         return id;
@@ -119,6 +114,22 @@ public class VaccinationDTO implements Serializable {
         this.targetAgeDays = targetAgeDays;
     }
 
+    public String getSideEffects() {
+        return sideEffects;
+    }
+
+    public void setSideEffects(String sideEffects) {
+        this.sideEffects = sideEffects;
+    }
+
+    public VaccineTypeDTO getVaccineType() {
+        return vaccineType;
+    }
+
+    public void setVaccineType(VaccineTypeDTO vaccineType) {
+        this.vaccineType = vaccineType;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -162,6 +173,9 @@ public class VaccinationDTO implements Serializable {
             '\'' +
             ", targetAgeDays=" +
             targetAgeDays +
+            ", sideEffects='" +
+            sideEffects +
+            '\'' +
             '}'
         );
     }

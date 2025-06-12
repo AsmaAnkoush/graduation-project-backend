@@ -35,6 +35,9 @@ public class Vaccination implements Serializable {
     @Column(name = "route_of_administration")
     private String routeOfAdministration;
 
+    @Column(name = "side_effects")
+    private String sideEffects;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "vaccine_type_id", nullable = false)
     private VaccineType vaccineType;
@@ -50,6 +53,19 @@ public class Vaccination implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vaccination")
     @JsonIgnoreProperties(value = { "appointments", "child", "vaccination" }, allowSetters = true)
     private Set<ScheduleVaccination> scheduleVaccinations = new HashSet<>();
+
+    public String getSideEffects() {
+        return sideEffects;
+    }
+
+    public void setSideEffects(String sideEffects) {
+        this.sideEffects = sideEffects;
+    }
+
+    public Vaccination sideEffects(String sideEffects) {
+        this.sideEffects = sideEffects;
+        return this;
+    }
 
     public Long getId() {
         return id;

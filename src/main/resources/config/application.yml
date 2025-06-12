@@ -74,6 +74,10 @@ spring:
         jwt:
           enabled: false
 
+logging:
+  level:
+    root: DEBUG
+
 springdoc:
   api-docs:
     enabled: false

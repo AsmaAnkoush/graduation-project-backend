@@ -1,0 +1,8 @@
+
+
+<changeSet id="20250603-1-add-fields" author="aya">
+<addColumn tableName="vaccination">
+  <column name="side_effects" type="varchar(255)"/>
+  <column name="administration_site" type="varchar(255)"/>
+</addColumn>
+</changeSet>
