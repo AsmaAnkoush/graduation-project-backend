@@ -5,16 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1a0b82f7-9cb4-4040-9b60-f4bb2380ebfa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/domain/AdditionalVaccine.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/repository/AdditionalVaccineRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/AdditionalVaccineService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/dto/AdditionalVaccineDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/mapper/AdditionalVaccineMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/web/rest/AdditionalVaccineResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/config/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/config/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/domain/Appointment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/domain/Appointment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/repository/AppointmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/repository/AppointmentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/repository/ScheduleVaccinationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/repository/ScheduleVaccinationRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/AppointmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/AppointmentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/VaccineTypeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/VaccineTypeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/dto/VaccinationDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/dto/VaccinationDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/mapper/AppointmentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/mapper/AppointmentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/mapper/ChildMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/service/mapper/ChildMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/web/rest/AppointmentResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bzu/smartvax/web/rest/AppointmentResource.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,36 +58,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.PasswordGenerator.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "Spring Boot.SmartVaxApp.executor": "Run",
-    "database.data.extractors.current.export.id": "SQL Inserts",
-    "git-widget-placeholder": "Halaupdat's-version1",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/PC/Downloads/smartvax_data.sql",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "project.scopes",
-    "ts.external.directory.path": "C:\\Users\\PC\\Documents\\GitHub\\smartvax-backend\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.PasswordGenerator.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.SmartVaxApp.executor&quot;: &quot;Run&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;SQL Inserts&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Halaupdat's-version1&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/PC/Downloads/smartvax_data.sql&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.scopes&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\PC\\Documents\\GitHub\\smartvax-backend\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Spring Boot.SmartVaxApp">
     <configuration name="PasswordGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.bzu.smartvax.PasswordGenerator" />
@@ -131,7 +131,8 @@
       <workItem from="1748381999416" duration="6940000" />
       <workItem from="1748526747315" duration="29551000" />
       <workItem from="1748606202139" duration="29890000" />
-      <workItem from="1748890812498" duration="32559000" />
+      <workItem from="1748890812498" duration="44093000" />
+      <workItem from="1749712368595" duration="740000" />
     </task>
     <servers />
   </component>

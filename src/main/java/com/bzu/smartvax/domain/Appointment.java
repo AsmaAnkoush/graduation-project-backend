@@ -34,25 +34,29 @@ public class Appointment implements Serializable {
     private String rescheduleReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "children", "appointments", "reminders", "feedbacks" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "children", "appointments", "reminders", "feedbacks" }, allowSetters = true, allowGetters = true)
     private Parent parent;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "healthRecord", "appointments", "scheduleVaccinations", "parent" }, allowSetters = true)
+    @JsonIgnoreProperties(
+        value = { "healthRecord", "appointments", "scheduleVaccinations", "parent" },
+        allowSetters = true,
+        allowGetters = true
+    )
     private Child child;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vaccination_center_id")
-    @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true, allowGetters = true)
     private VaccinationCenter vaccinationCenter;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requested_center_id")
-    @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true, allowGetters = true)
     private VaccinationCenter requestedNewCenter;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "appointments" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "appointments" }, allowSetters = true, allowGetters = true)
     private HealthWorker healthWorker;
 
     @ManyToMany
@@ -61,7 +65,7 @@ public class Appointment implements Serializable {
         joinColumns = @JoinColumn(name = "appointment_id"),
         inverseJoinColumns = @JoinColumn(name = "schedule_id")
     )
-    @JsonIgnoreProperties(value = { "appointments", "child", "vaccination" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "appointments", "child", "vaccination" }, allowSetters = true, allowGetters = true)
     private List<ScheduleVaccination> schedules;
 
     // === Getters and Setters ===
