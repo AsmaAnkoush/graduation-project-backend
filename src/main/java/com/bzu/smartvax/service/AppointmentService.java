@@ -11,7 +11,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -125,6 +127,30 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
 
         return appointmentMapper.toDto(appointment);
+    }
+
+    @Scheduled(fixedRate = 30000) // كل دقيقة
+    @Transactional
+    public void markMissedAppointmentsAutomatically() {
+        LocalDate today = LocalDate.now();
+
+        List<Appointment> appointments = appointmentRepository.findAll();
+        for (Appointment a : appointments) {
+            if (!List.of("completed", "cancelled", "missed").contains(a.getStatus().toLowerCase())) {
+                LocalDate date = a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate();
+                if (date.isBefore(today)) {
+                    // ✅ تأكد من وجود كل العلاقات الضرورية
+                    if (a.getChild() == null || a.getSchedules() == null || a.getSchedules().isEmpty()) {
+                        log.warn("⚠️ الموعد {} لا يحتوي على بيانات كافية (child/schedules) لتعيينه كـ missed", a.getId());
+                        continue;
+                    }
+
+                    a.setStatus("missed");
+                    appointmentRepository.save(a);
+                    log.info("🚨 تم تعيين الموعد {} كـ missed لتاريخه: {}", a.getId(), date);
+                }
+            }
+        }
     }
 
     @Transactional
@@ -253,61 +279,75 @@ public class AppointmentService {
     @Scheduled(fixedRate = 30000)
     public void autoAssignAppointments() {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Jerusalem"));
-
         List<ScheduleVaccination> schedules = scheduleVaccinationRepository.findAll();
 
-        List<ScheduleVaccination> dueSchedules = schedules
-            .stream()
-            .filter(sv -> {
-                LocalDate scheduledDate = sv.getScheduledDate();
-                LocalDate weekBefore = scheduledDate.minusDays(7);
-                LocalDate weekAfter = scheduledDate.plusDays(7);
-                return (today.isEqual(weekBefore) || today.isAfter(scheduledDate)) && today.isBefore(weekAfter);
-            })
-            .toList();
-
-        var grouped = dueSchedules
+        var grouped = schedules
             .stream()
             .collect(
-                java.util.stream.Collectors.groupingBy(
-                    sv -> sv.getScheduledDate() + "_" + sv.getVaccinationGroup().getId() + "_" + sv.getChild().getId()
-                )
+                Collectors.groupingBy(sv -> sv.getScheduledDate() + "_" + sv.getVaccinationGroup().getId() + "_" + sv.getChild().getId())
             );
 
-        for (List<ScheduleVaccination> group : grouped.values()) {
+        for (Map.Entry<String, List<ScheduleVaccination>> entry : grouped.entrySet()) {
+            List<ScheduleVaccination> group = entry.getValue();
             ScheduleVaccination example = group.get(0);
             Child child = example.getChild();
             LocalDate scheduledDate = example.getScheduledDate();
 
-            // معالجة الإجازات: إذا الجمعة أو السبت → الأحد التالي
+            // ✨ معالجة الإجازات أولاً
+            if (scheduledDate.getDayOfWeek().getValue() == 5 || scheduledDate.getDayOfWeek().getValue() == 6) {
+                scheduledDate = scheduledDate.with(java.time.temporal.TemporalAdjusters.next(java.time.DayOfWeek.SUNDAY));
+            }
+            LocalDate finalDate = scheduledDate;
+
+            List<Appointment> appointments = appointmentRepository.findByChild_Id(child.getId());
+
+            String status;
+            if (scheduledDate.isBefore(today)) {
+                status = "missed";
+            } else if (!scheduledDate.isAfter(today.plusDays(7))) {
+                status = "PENDING";
+            } else {
+                continue; // تجاهل المواعيد البعيدة
+            }
+
+            String finalStatus = status;
+
+            boolean exists = appointments
+                .stream()
+                .anyMatch(app -> {
+                    boolean sameDate = app.getAppointmentDate().atZone(ZoneId.of("Asia/Jerusalem")).toLocalDate().equals(finalDate);
+
+                    boolean sameGroup = app
+                        .getSchedules()
+                        .stream()
+                        .map(sv -> sv.getVaccination().getGroup().getId())
+                        .collect(Collectors.toSet())
+                        .equals(group.stream().map(sv -> sv.getVaccination().getGroup().getId()).collect(Collectors.toSet()));
+
+                    return sameDate && sameGroup && app.getStatus().equalsIgnoreCase(finalStatus);
+                });
+
+            if (exists) {
+                continue; // لا تنشئ موعد مكرر بنفس التاريخ والمجموعة والحالة
+            }
+
             if (scheduledDate.getDayOfWeek().getValue() == 5 || scheduledDate.getDayOfWeek().getValue() == 6) {
                 scheduledDate = scheduledDate.with(java.time.temporal.TemporalAdjusters.next(java.time.DayOfWeek.SUNDAY));
             }
 
-            Instant appointmentInstant = scheduledDate
-                .atTime(8, 0) // الساعة 8:00 صباحًا
-                .atZone(ZoneId.of("Asia/Jerusalem"))
-                .toInstant();
+            Instant finalAppointmentDate = scheduledDate.atTime(8, 0).atZone(ZoneId.of("Asia/Jerusalem")).toInstant();
 
-            boolean alreadyExists = appointmentRepository.existsByChildAndAppointmentDateAndStatusIn(
-                child,
-                appointmentInstant,
-                List.of("PENDING", "reshdualing", "confirmed", "trlocation", "completed")
-            );
+            Appointment appointment = new Appointment();
+            appointment.setAppointmentDate(finalAppointmentDate);
+            appointment.setChild(child);
+            appointment.setParent(child.getParent());
+            appointment.setVaccinationCenter(child.getVaccinationCenter());
+            appointment.setHealthWorker(null);
+            appointment.setSchedules(group);
+            appointment.setStatus(status);
 
-            if (!alreadyExists) {
-                Appointment appointment = new Appointment();
-                appointment.setAppointmentDate(appointmentInstant);
-                appointment.setChild(child);
-                appointment.setParent(child.getParent());
-                appointment.setStatus("PENDING");
-                appointment.setVaccinationCenter(child.getVaccinationCenter());
-                appointment.setHealthWorker(null);
-                appointment.setSchedules(group); // ربط الموعد بالتطعيمات الفعلية
-
-                appointmentRepository.save(appointment);
-                log.info("✅ موعد جديد للطفل {} بتاريخ {}", child.getId(), scheduledDate);
-            }
+            appointmentRepository.save(appointment);
+            log.info("✅ تم إنشاء موعد للطفل {} في التاريخ {} بالحالة {}", child.getId(), scheduledDate, status);
         }
     }
 }

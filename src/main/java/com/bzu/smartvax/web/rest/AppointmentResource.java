@@ -12,6 +12,7 @@ import com.bzu.smartvax.service.dto.ScheduleVaccinationDTO;
 import com.bzu.smartvax.service.dto.VaccinationDTO;
 import com.bzu.smartvax.service.mapper.AppointmentMapper;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
@@ -76,6 +77,13 @@ public class AppointmentResource {
 
     @GetMapping("/by-parent/{parentId}")
     public ResponseEntity<List<AppointmentDTO>> getAppointmentsByParentId(@PathVariable Long parentId) {
+        List<Appointment> appointments = appointmentRepository.findByParent_Id(parentId);
+        List<AppointmentDTO> dtoList = appointments.stream().map(appointmentMapper::toDto).toList();
+        return ResponseEntity.ok(dtoList);
+    }
+
+    @GetMapping("/by-parent-with-schedules/{parentId}")
+    public ResponseEntity<List<AppointmentDTO>> getAppointmentsByParentWithSchedules(@PathVariable Long parentId) {
         List<Appointment> appointments = appointmentRepository.findByParent_Id(parentId);
         List<AppointmentDTO> dtoList = appointments.stream().map(appointmentMapper::toDto).toList();
         return ResponseEntity.ok(dtoList);
@@ -162,6 +170,19 @@ public class AppointmentResource {
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    @GetMapping("/appointments/for-current-parent")
+    public ResponseEntity<List<AppointmentDTO>> getAppointmentsForCurrentParent(HttpSession session) {
+        Users user = (Users) session.getAttribute("user");
+        if (user == null || !"PARENT".equalsIgnoreCase(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Long parentId = user.getReferenceId();
+        List<Appointment> appointments = appointmentRepository.findByParent_Id(parentId);
+        List<AppointmentDTO> dtoList = appointments.stream().map(appointmentMapper::toDto).toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     @GetMapping("/health-worker/{userId}/appointments-by-date")

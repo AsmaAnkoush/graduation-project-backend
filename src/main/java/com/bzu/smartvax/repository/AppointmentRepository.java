@@ -3,6 +3,7 @@ package com.bzu.smartvax.repository;
 import com.bzu.smartvax.domain.Appointment;
 import com.bzu.smartvax.domain.Child;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
@@ -82,7 +83,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "parent",
         }
     )
+    @Query(
+        """
+            SELECT COUNT(a) > 0 FROM Appointment a
+            WHERE a.child = :child
+              AND FUNCTION('DATE', a.appointmentDate) = :date
+              AND a.status IN ('PENDING', 'reshdualing', 'confirmed', 'trlocation', 'completed')
+        """
+    )
+    boolean existsValidAppointmentOnDate(@Param("child") Child child, @Param("date") LocalDate date);
+
     List<Appointment> findByChild_VaccinationCenter_IdAndAppointmentDateBetween(Long centerId, Instant start, Instant end);
+    List<Appointment> findByChild_Id(String childId);
 
     @Query("SELECT a FROM Appointment a JOIN FETCH a.child c JOIN FETCH a.vaccinationCenter vc WHERE vc.id = :centerId")
     List<Appointment> findAllByCenterWithDetails(@Param("centerId") Long centerId);
