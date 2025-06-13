@@ -32,8 +32,13 @@ public class VaccinationController {
         return vaccinationService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    //    @GetMapping("/vaccinations")
+    //    public List<Vaccination> getAllVaccinations() {
+    //        return vaccinationRepository.findAll();
+    //    }
+
     @GetMapping("/vaccinations")
-    public List<Vaccination> getAllVaccinations() {
-        return vaccinationRepository.findAll();
+    public List<VaccinationDTO> getAllVaccinations() {
+        return vaccinationService.findAll(); // باستخدام mapper
     }
 }
