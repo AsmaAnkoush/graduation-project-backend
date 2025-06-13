@@ -44,6 +44,7 @@ public class AuthController {
 
             if (passwordEncoder.matches(password, user.getPassword())) {
                 session.setAttribute("user", user);
+                session.setAttribute("userId", user.getId());
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     user.getUsername(),
