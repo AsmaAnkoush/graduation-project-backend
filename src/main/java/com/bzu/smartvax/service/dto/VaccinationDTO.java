@@ -33,6 +33,7 @@ public class VaccinationDTO implements Serializable {
     private String sideEffects;
 
     private VaccineTypeDTO vaccineType;
+    private VaccinationGroupDTO group;
 
     public Long getId() {
         return id;
@@ -40,6 +41,14 @@ public class VaccinationDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public VaccinationGroupDTO getGroup() {
+        return group;
+    }
+
+    public void setGroup(VaccinationGroupDTO group) {
+        this.group = group;
     }
 
     public String getName() {

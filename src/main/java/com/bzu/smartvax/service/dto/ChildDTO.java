@@ -11,6 +11,7 @@ public class ChildDTO {
     private BigDecimal weight;
     private BigDecimal height;
     private Long parentId;
+    private ParentDTO parent; // ✅ مضاف: لعرض معلومات الأب
     private HealthRecordDTO healthRecord;
     private VaccinationCenterDTO vaccinationCenter;
 
@@ -62,6 +63,14 @@ public class ChildDTO {
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+
+    public ParentDTO getParent() {
+        return parent;
+    }
+
+    public void setParent(ParentDTO parent) {
+        this.parent = parent;
     }
 
     public HealthRecordDTO getHealthRecord() {

@@ -37,6 +37,9 @@ public class AdditionalVaccineService {
             .findById(id)
             .map(existing -> {
                 existing.setName(dto.getName());
+                existing.setMinAgeMonths(dto.getMinAgeMonths());
+                existing.setDoseCount(dto.getDoseCount());
+                existing.setNotes(dto.getNotes());
                 return mapper.toDto(repository.save(existing));
             });
     }

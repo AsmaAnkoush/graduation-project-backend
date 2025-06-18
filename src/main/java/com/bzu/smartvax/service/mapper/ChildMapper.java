@@ -5,14 +5,16 @@ import com.bzu.smartvax.domain.HealthRecord;
 import com.bzu.smartvax.domain.VaccinationCenter;
 import com.bzu.smartvax.service.dto.ChildDTO;
 import com.bzu.smartvax.service.dto.HealthRecordDTO;
+import com.bzu.smartvax.service.dto.ParentDTO;
 import com.bzu.smartvax.service.dto.VaccinationCenterDTO;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ChildMapper {
     @Mapping(source = "parent.id", target = "parentId")
+    @Mapping(source = "parent", target = "parent")
     @Mapping(source = "healthRecord", target = "healthRecord")
-    @Mapping(source = "vaccinationCenter", target = "vaccinationCenter", qualifiedByName = "vaccinationCenterId")
+    @Mapping(source = "vaccinationCenter", target = "vaccinationCenter") // ✅ هنا التعديل
     ChildDTO toDto(Child child);
 
     @Mapping(source = "parentId", target = "parent.id")
@@ -23,20 +25,18 @@ public interface ChildMapper {
     @Named("childMini")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name") // ✅ تطابق الاسم مع الموجود في ChildDTO
+    @Mapping(target = "name", source = "name")
     ChildDTO toMiniDto(Child child);
 
     @Mapping(target = "parent", ignore = true)
     @Mapping(target = "vaccinationCenter", ignore = true)
     void partialUpdate(@MappingTarget Child entity, ChildDTO dto);
 
-    // MapStruct helper for VaccinationCenterDTO
     @Named("vaccinationCenterId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     VaccinationCenterDTO toDtoVaccinationCenterId(VaccinationCenter center);
 
-    // Manual mappers for HealthRecord
     default HealthRecordDTO map(HealthRecord record) {
         if (record == null) return null;
         HealthRecordDTO dto = new HealthRecordDTO();

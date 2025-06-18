@@ -259,22 +259,22 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
-    @Scheduled(cron = "0 0 1 * * *") // كل يوم الساعة 1 صباحًا
-    @Transactional
-    public void autoCancelOverdueAppointments() {
-        LocalDate today = LocalDate.now();
-
-        List<Appointment> all = appointmentRepository.findAll();
-        for (Appointment a : all) {
-            if (!"completed".equalsIgnoreCase(a.getStatus())) {
-                LocalDate date = a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate();
-                if (date.isBefore(today)) {
-                    a.setStatus("cancelled");
-                    appointmentRepository.save(a);
-                }
-            }
-        }
-    }
+    //    @Scheduled(cron = "0 0 1 * * *") // كل يوم الساعة 1 صباحًا
+    //    @Transactional
+    //    public void autoCancelOverdueAppointments() {
+    //        LocalDate today = LocalDate.now();
+    //
+    //        List<Appointment> all = appointmentRepository.findAll();
+    //        for (Appointment a : all) {
+    //            if (!"completed".equalsIgnoreCase(a.getStatus())) {
+    //                LocalDate date = a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate();
+    //                if (date.isBefore(today)) {
+    //                    a.setStatus("cancelled");
+    //                    appointmentRepository.save(a);
+    //                }
+    //            }
+    //        }
+    //    }
 
     @Scheduled(fixedRate = 30000)
     public void autoAssignAppointments() {
@@ -293,7 +293,7 @@ public class AppointmentService {
             Child child = example.getChild();
             LocalDate scheduledDate = example.getScheduledDate();
 
-            // ✨ معالجة الإجازات أولاً
+            // معالجة الإجازات أولاً (إذا صادف يوم الجمعة أو السبت، انقل إلى الأحد)
             if (scheduledDate.getDayOfWeek().getValue() == 5 || scheduledDate.getDayOfWeek().getValue() == 6) {
                 scheduledDate = scheduledDate.with(java.time.temporal.TemporalAdjusters.next(java.time.DayOfWeek.SUNDAY));
             }
@@ -301,6 +301,7 @@ public class AppointmentService {
 
             List<Appointment> appointments = appointmentRepository.findByChild_Id(child.getId());
 
+            // تحديد الحالة حسب تاريخ الموعد بالنسبة لليوم
             String status;
             if (scheduledDate.isBefore(today)) {
                 status = "missed";
@@ -310,8 +311,7 @@ public class AppointmentService {
                 continue; // تجاهل المواعيد البعيدة
             }
 
-            String finalStatus = status;
-
+            // التحقق من وجود موعد بنفس الطفل، نفس التاريخ ونفس مجموعة التطعيم (بغض النظر عن الحالة)
             boolean exists = appointments
                 .stream()
                 .anyMatch(app -> {
@@ -324,17 +324,14 @@ public class AppointmentService {
                         .collect(Collectors.toSet())
                         .equals(group.stream().map(sv -> sv.getVaccination().getGroup().getId()).collect(Collectors.toSet()));
 
-                    return sameDate && sameGroup && app.getStatus().equalsIgnoreCase(finalStatus);
+                    return sameDate && sameGroup;
                 });
 
             if (exists) {
-                continue; // لا تنشئ موعد مكرر بنفس التاريخ والمجموعة والحالة
+                continue; // لا تنشئ موعد مكرر بنفس التاريخ والمجموعة بغض النظر عن الحالة
             }
 
-            if (scheduledDate.getDayOfWeek().getValue() == 5 || scheduledDate.getDayOfWeek().getValue() == 6) {
-                scheduledDate = scheduledDate.with(java.time.temporal.TemporalAdjusters.next(java.time.DayOfWeek.SUNDAY));
-            }
-
+            // إعداد الوقت النهائي للموعد (الثامنة صباحاً بتوقيت القدس)
             Instant finalAppointmentDate = scheduledDate.atTime(8, 0).atZone(ZoneId.of("Asia/Jerusalem")).toInstant();
 
             Appointment appointment = new Appointment();

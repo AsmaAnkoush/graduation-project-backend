@@ -69,11 +69,28 @@ public interface AppointmentMapper extends EntityMapper<AppointmentDTO, Appointm
         dto.setScheduledDate(schedule.getScheduledDate());
         dto.setStatus(schedule.getStatus());
 
+        // ✅ تعيين الطفلس
+        if (schedule.getChild() != null) {
+            ChildDTO childDTO = new ChildDTO();
+            childDTO.setId(schedule.getChild().getId());
+            dto.setChild(childDTO);
+        }
+
+        // ✅ تعيين التطعيم ومعلوماته
         if (schedule.getVaccination() != null) {
             VaccinationDTO vaccinationDTO = new VaccinationDTO();
             vaccinationDTO.setId(schedule.getVaccination().getId());
             vaccinationDTO.setName(schedule.getVaccination().getName());
 
+            // ✅ تعيين مجموعة التطعيم
+            if (schedule.getVaccination().getGroup() != null) {
+                VaccinationGroupDTO groupDTO = new VaccinationGroupDTO();
+                groupDTO.setId(schedule.getVaccination().getGroup().getId());
+                groupDTO.setName(schedule.getVaccination().getGroup().getName());
+                vaccinationDTO.setGroup(groupDTO);
+            }
+
+            // ✅ تعيين نوع اللقاح (vaccineType)
             if (schedule.getVaccination().getVaccineType() != null) {
                 VaccineTypeDTO typeDTO = new VaccineTypeDTO();
                 typeDTO.setId(schedule.getVaccination().getVaccineType().getId());

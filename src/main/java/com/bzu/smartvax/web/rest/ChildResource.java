@@ -1,8 +1,10 @@
 package com.bzu.smartvax.web.rest;
 
+import com.bzu.smartvax.domain.Child;
 import com.bzu.smartvax.repository.ChildRepository;
 import com.bzu.smartvax.service.ChildService;
 import com.bzu.smartvax.service.dto.ChildDTO;
+import com.bzu.smartvax.service.mapper.ChildMapper;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -41,10 +43,12 @@ public class ChildResource {
     private final ChildService childService;
 
     private final ChildRepository childRepository;
+    private final ChildMapper childMapper;
 
-    public ChildResource(ChildService childService, ChildRepository childRepository) {
+    public ChildResource(ChildService childService, ChildRepository childRepository, ChildMapper childMapper) {
         this.childService = childService;
         this.childRepository = childRepository;
+        this.childMapper = childMapper;
     }
 
     /**
@@ -64,6 +68,13 @@ public class ChildResource {
         return ResponseEntity.created(new URI("/api/children/" + childDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, childDTO.getId().toString()))
             .body(childDTO);
+    }
+
+    @GetMapping("/by-parent/{parentId}")
+    public ResponseEntity<List<ChildDTO>> getChildrenByParentId(@PathVariable Long parentId) {
+        List<Child> children = childRepository.findByParentId(parentId);
+        List<ChildDTO> dtoList = children.stream().map(childMapper::toDto).toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     /**

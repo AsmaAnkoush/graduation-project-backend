@@ -20,6 +20,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "child",
             "schedules",
             "schedules.vaccination",
+            "schedules.vaccination.group", // ✅ مضافة
             "schedules.vaccination.vaccineType",
             "healthWorker",
             "vaccinationCenter",
@@ -34,6 +35,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "child",
             "schedules",
             "schedules.vaccination",
+            "schedules.vaccination.group", // ✅ مضافة
             "schedules.vaccination.vaccineType",
             "healthWorker",
             "vaccinationCenter",
@@ -48,6 +50,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "child",
             "schedules",
             "schedules.vaccination",
+            "schedules.vaccination.group", // ✅ مضافة
             "schedules.vaccination.vaccineType",
             "healthWorker",
             "vaccinationCenter",
@@ -62,6 +65,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "child",
             "schedules",
             "schedules.vaccination",
+            "schedules.vaccination.group", // ✅ مضافة
             "schedules.vaccination.vaccineType",
             "healthWorker",
             "vaccinationCenter",
@@ -76,6 +80,23 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "child",
             "schedules",
             "schedules.vaccination",
+            "schedules.vaccination.group", // ✅ موجودة مسبقًا
+            "schedules.vaccination.vaccineType",
+            "healthWorker",
+            "vaccinationCenter",
+            "requestedNewCenter",
+            "parent",
+        }
+    )
+    @Query("SELECT a FROM Appointment a WHERE a.parent.id = :parentId")
+    List<Appointment> findByParentIdWithSchedules(@Param("parentId") Long parentId);
+
+    @EntityGraph(
+        attributePaths = {
+            "child",
+            "schedules",
+            "schedules.vaccination",
+            "schedules.vaccination.group", // ✅ مضافة
             "schedules.vaccination.vaccineType",
             "healthWorker",
             "vaccinationCenter",
@@ -85,25 +106,20 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     )
     @Query(
         """
-            SELECT COUNT(a) > 0 FROM Appointment a
-            WHERE a.child = :child
-              AND FUNCTION('DATE', a.appointmentDate) = :date
-              AND a.status IN ('PENDING', 'reshdualing', 'confirmed', 'trlocation', 'completed')
+        SELECT COUNT(a) > 0 FROM Appointment a
+        WHERE a.child = :child
+          AND FUNCTION('DATE', a.appointmentDate) = :date
+          AND a.status IN ('PENDING', 'reshdualing', 'confirmed', 'trlocation', 'completed')
         """
     )
     boolean existsValidAppointmentOnDate(@Param("child") Child child, @Param("date") LocalDate date);
-
-    List<Appointment> findByChild_VaccinationCenter_IdAndAppointmentDateBetween(Long centerId, Instant start, Instant end);
-    List<Appointment> findByChild_Id(String childId);
-
-    @Query("SELECT a FROM Appointment a JOIN FETCH a.child c JOIN FETCH a.vaccinationCenter vc WHERE vc.id = :centerId")
-    List<Appointment> findAllByCenterWithDetails(@Param("centerId") Long centerId);
 
     @EntityGraph(
         attributePaths = {
             "child",
             "schedules",
             "schedules.vaccination",
+            "schedules.vaccination.group", // ✅ مضافة
             "schedules.vaccination.vaccineType",
             "healthWorker",
             "vaccinationCenter",
@@ -112,6 +128,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
         }
     )
     List<Appointment> findByVaccinationCenterIdAndAppointmentDateBetween(Long centerId, Instant start, Instant end);
+
+    // ✅ لو تستخدمه في صفحات فيها scheduleVaccination لازم تعدله، لكن يبدو إنه بسيط
+    List<Appointment> findByChild_Id(String childId);
+
+    @Query("SELECT a FROM Appointment a JOIN FETCH a.child c JOIN FETCH a.vaccinationCenter vc WHERE vc.id = :centerId")
+    List<Appointment> findAllByCenterWithDetails(@Param("centerId") Long centerId);
 
     List<Appointment> findByVaccinationCenter_Id(Long centerId);
 

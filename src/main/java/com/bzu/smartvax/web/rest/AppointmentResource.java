@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -47,6 +49,8 @@ public class AppointmentResource {
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
+
+    private final Logger log = LoggerFactory.getLogger(AppointmentResource.class);
 
     private final AppointmentService appointmentService;
     private final AppointmentRepository appointmentRepository;
@@ -84,8 +88,11 @@ public class AppointmentResource {
 
     @GetMapping("/by-parent-with-schedules/{parentId}")
     public ResponseEntity<List<AppointmentDTO>> getAppointmentsByParentWithSchedules(@PathVariable Long parentId) {
-        List<Appointment> appointments = appointmentRepository.findByParent_Id(parentId);
+        log.debug("🎯 Enter: getAppointmentsByParentWithSchedules() with parentId = {}", parentId);
+
+        List<Appointment> appointments = appointmentRepository.findByParentIdWithSchedules(parentId);
         List<AppointmentDTO> dtoList = appointments.stream().map(appointmentMapper::toDto).toList();
+
         return ResponseEntity.ok(dtoList);
     }
 

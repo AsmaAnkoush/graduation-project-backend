@@ -94,10 +94,9 @@ public class ChildService {
      * @param id the id of the entity.
      * @return the entity.
      */
-    @Transactional(readOnly = true)
     public Optional<ChildDTO> findOne(Long id) {
-        LOG.debug("Request to get Child : {}", id);
-        return childRepository.findById(String.valueOf(id)).map(childMapper::toDto);
+        LOG.debug("Request to get Child with vaccination center: {}", id);
+        return childRepository.findByIdWithVaccinationCenter(String.valueOf(id)).map(childMapper::toDto);
     }
 
     /**
