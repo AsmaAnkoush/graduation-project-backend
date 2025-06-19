@@ -23,7 +23,18 @@ public interface ScheduleVaccinationRepository extends JpaRepository<ScheduleVac
     )
     List<ScheduleVaccination> findAllWithVaccinationByChildIds(@Param("childIds") List<String> childIds);
 
-    // ✅ هذا هو التعديل المهم لتحميل مركز التطعيم مع الطفل
-    @EntityGraph(attributePaths = { "child", "child.vaccinationCenter" })
-    List<ScheduleVaccination> findAll();
+    @Query(
+        """
+            SELECT sv FROM ScheduleVaccination sv
+            LEFT JOIN FETCH sv.vaccination v
+            LEFT JOIN FETCH v.group
+            LEFT JOIN FETCH v.vaccineType
+            LEFT JOIN FETCH sv.vaccinationGroup g
+            LEFT JOIN FETCH sv.child c
+            LEFT JOIN FETCH c.parent
+            LEFT JOIN FETCH c.vaccinationCenter
+            WHERE c.id = :id
+        """
+    )
+    List<ScheduleVaccination> findAllWithVaccinationByChildId(@Param("id") String id);
 }

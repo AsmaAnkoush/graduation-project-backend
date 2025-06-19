@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <changeSet id="update-reminder-fields" author="smartvax">
+    <addColumn tableName="reminder">
+      <column name="scheduled_date" type="timestamp"/>
+      <column name="sent" type="boolean" defaultValueBoolean="false"/>
+      <column name="recipient_type" type="varchar(20)"/>
+    </addColumn>
+  </changeSet>
+
+</databaseChangeLog>

@@ -30,6 +30,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     )
     List<Appointment> findByHealthWorkerIdAndAppointmentDateBetween(Long healthWorkerId, Instant start, Instant end);
 
+    List<Appointment> findByStatusAndAppointmentDateBetween(String status, Instant start, Instant end);
+
     @EntityGraph(
         attributePaths = {
             "child",
@@ -140,4 +142,27 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     boolean existsByChildAndAppointmentDateAndStatus(Child child, Instant appointmentDate, String status);
 
     boolean existsByChildAndAppointmentDateAndStatusIn(Child child, Instant appointmentDate, List<String> statuses);
+
+    @Query(
+        """
+            SELECT sv.vaccination.id, sv.child.id, MAX(a.id)
+            FROM Appointment a
+            JOIN a.schedules sv
+            WHERE a.status = 'MISSED'
+            GROUP BY sv.vaccination.id, sv.child.id
+            HAVING COUNT(a) >= 2
+        """
+    )
+    List<Object[]> findMissedTwiceSameVaccination();
+
+    @Query(
+        """
+            SELECT a.child.id, MAX(a.id)
+            FROM Appointment a
+            WHERE a.status = 'MISSED'
+            GROUP BY a.child.id
+            HAVING COUNT(a) >= 3
+        """
+    )
+    List<Object[]> findMissedThreeTimesForChild();
 }

@@ -1,7 +1,9 @@
 package com.bzu.smartvax.service.dto;
 
+import com.bzu.smartvax.domain.RecipientType;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -18,6 +20,13 @@ public class ReminderDTO implements Serializable {
     private AppointmentDTO appointment;
 
     private ParentDTO recipient;
+
+    private LocalDateTime scheduledDate;
+
+    private Boolean sent;
+
+    private RecipientType recipientType;
+    private String childId;
 
     public Long getId() {
         return id;
@@ -51,6 +60,14 @@ public class ReminderDTO implements Serializable {
         this.recipient = recipient;
     }
 
+    public String getChildId() {
+        return childId;
+    }
+
+    public void setChildId(String childId) {
+        this.childId = childId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -67,6 +84,30 @@ public class ReminderDTO implements Serializable {
         return Objects.equals(this.id, reminderDTO.id);
     }
 
+    public LocalDateTime getScheduledDate() {
+        return scheduledDate;
+    }
+
+    public void setScheduledDate(LocalDateTime scheduledDate) {
+        this.scheduledDate = scheduledDate;
+    }
+
+    public Boolean getSent() {
+        return sent;
+    }
+
+    public void setSent(Boolean sent) {
+        this.sent = sent;
+    }
+
+    public RecipientType getRecipientType() {
+        return recipientType;
+    }
+
+    public void setRecipientType(RecipientType recipientType) {
+        this.recipientType = recipientType;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.id);
@@ -80,6 +121,10 @@ public class ReminderDTO implements Serializable {
             ", messageText='" + getMessageText() + "'" +
             ", appointment=" + getAppointment() +
             ", recipient=" + getRecipient() +
+            ", scheduledDate=" + getScheduledDate() +
+            ", sent=" + getSent() +
+            ", recipientType=" + getRecipientType() +
+
             "}";
     }
 }

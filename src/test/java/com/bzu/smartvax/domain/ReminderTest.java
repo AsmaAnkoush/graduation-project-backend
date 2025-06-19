@@ -32,7 +32,7 @@ class ReminderTest {
         reminder.setAppointment(appointmentBack);
         assertThat(reminder.getAppointment()).isEqualTo(appointmentBack);
 
-        reminder.appointment(null);
+        reminder.setAppointment(null);
         assertThat(reminder.getAppointment()).isNull();
     }
 
@@ -44,7 +44,7 @@ class ReminderTest {
         reminder.setRecipient(parentBack);
         assertThat(reminder.getRecipient()).isEqualTo(parentBack);
 
-        reminder.recipient(null);
+        reminder.setRecipient(null);
         assertThat(reminder.getRecipient()).isNull();
     }
 }

@@ -31,4 +31,20 @@ public interface ChildRepository extends JpaRepository<Child, String> {
         "SELECT c FROM Child c LEFT JOIN FETCH c.vaccinationCenter WHERE c.parent.id = :parentId"
     )
     Optional<Child> findFirstByParentIdWithVaccinationCenter(@org.springframework.data.repository.query.Param("parentId") Long parentId);
+
+    @Query("SELECT c FROM Child c LEFT JOIN FETCH c.vaccinationCenter WHERE c.id = :id")
+    Optional<Child> findByIdWithVaccinationCenter(@Param("id") String id);
+
+    @Query(
+        """
+            SELECT c FROM Child c
+            LEFT JOIN FETCH c.vaccinationCenter
+            LEFT JOIN FETCH c.parent
+            LEFT JOIN FETCH c.healthRecord
+            WHERE c.id = :id
+        """
+    )
+    Optional<Child> findByIdWithAllRelations(@Param("id") String id);
+
+    List<Child> findByVaccinationCenter_Id(Long centerId);
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * A Reminder.
@@ -24,22 +25,58 @@ public class Reminder implements Serializable {
     @Column(name = "message_text", nullable = false)
     private String messageText;
 
+    @Column(name = "scheduled_date")
+    private LocalDateTime scheduledDate;
+
+    @Column(name = "sent")
+    private Boolean sent = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "recipient_type")
+    private RecipientType recipientType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "parent", "child", "schedule", "healthWorker" }, allowSetters = true)
     private Appointment appointment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "children", "appointments", "reminders", "feedbacks" }, allowSetters = true)
-    private Parent recipient;
+    private Parent recipient; // يمكن لاحقًا تغييره لـ Users أو entity موحد
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "child_id")
+    @JsonIgnoreProperties(value = { "parent", "vaccinationCenter" }, allowSetters = true)
+    private Child child;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vaccination_center_id")
+    @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true)
+    private VaccinationCenter vaccinationCenter;
+
+    // Getters & Setters
+
+    public VaccinationCenter getVaccinationCenter() {
+        return vaccinationCenter;
+    }
+
+    public void setVaccinationCenter(VaccinationCenter vaccinationCenter) {
+        this.vaccinationCenter = vaccinationCenter;
+    }
+
+    public Child getChild() {
+        return child;
+    }
+
+    public void setChild(Child child) {
+        this.child = child;
+    }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
     public Reminder id(Long id) {
-        this.setId(id);
+        this.id = id;
         return this;
     }
 
@@ -48,11 +85,11 @@ public class Reminder implements Serializable {
     }
 
     public String getMessageText() {
-        return this.messageText;
+        return messageText;
     }
 
     public Reminder messageText(String messageText) {
-        this.setMessageText(messageText);
+        this.messageText = messageText;
         return this;
     }
 
@@ -60,57 +97,76 @@ public class Reminder implements Serializable {
         this.messageText = messageText;
     }
 
+    public LocalDateTime getScheduledDate() {
+        return scheduledDate;
+    }
+
+    public void setScheduledDate(LocalDateTime scheduledDate) {
+        this.scheduledDate = scheduledDate;
+    }
+
+    public Boolean getSent() {
+        return sent;
+    }
+
+    public void setSent(Boolean sent) {
+        this.sent = sent;
+    }
+
+    public RecipientType getRecipientType() {
+        return recipientType;
+    }
+
+    public void setRecipientType(RecipientType recipientType) {
+        this.recipientType = recipientType;
+    }
+
     public Appointment getAppointment() {
-        return this.appointment;
+        return appointment;
     }
 
     public void setAppointment(Appointment appointment) {
         this.appointment = appointment;
     }
 
-    public Reminder appointment(Appointment appointment) {
-        this.setAppointment(appointment);
-        return this;
-    }
-
     public Parent getRecipient() {
-        return this.recipient;
+        return recipient;
     }
 
-    public void setRecipient(Parent parent) {
-        this.recipient = parent;
+    public void setRecipient(Parent recipient) {
+        this.recipient = recipient;
     }
 
-    public Reminder recipient(Parent parent) {
-        this.setRecipient(parent);
-        return this;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    // equals, hashCode, toString
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Reminder)) {
-            return false;
-        }
-        return getId() != null && getId().equals(((Reminder) o).getId());
+        if (this == o) return true;
+        if (!(o instanceof Reminder)) return false;
+        return id != null && id.equals(((Reminder) o).id);
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "Reminder{" +
-            "id=" + getId() +
-            ", messageText='" + getMessageText() + "'" +
-            "}";
+        return (
+            "Reminder{" +
+            "id=" +
+            id +
+            ", messageText='" +
+            messageText +
+            '\'' +
+            ", scheduledDate=" +
+            scheduledDate +
+            ", sent=" +
+            sent +
+            ", recipientType=" +
+            recipientType +
+            '}'
+        );
     }
 }
