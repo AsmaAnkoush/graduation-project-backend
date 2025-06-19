@@ -1,6 +1,7 @@
 package com.bzu.smartvax.repository;
 
 import com.bzu.smartvax.domain.HealthWorker;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,6 @@ public interface HealthWorkerRepository extends JpaRepository<HealthWorker, Long
     default Optional<HealthWorker> findByUserReferenceId(Long referenceId) {
         return findById(referenceId); // لأن referenceId = healthWorker.id
     }
+
+    List<HealthWorker> findByVaccinationCenterId(Long centerId);
 }

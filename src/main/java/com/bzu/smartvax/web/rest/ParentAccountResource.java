@@ -67,6 +67,19 @@ public class ParentAccountResource {
         return ResponseEntity.ok(response);
     }
 
+    //    // ✅ 3. جلب Parent ID عبر اسم المستخدم (لحل مشكلة React)
+    //    @GetMapping("/parent-account/by-username")
+    //    public ResponseEntity<?> getParentIdByUsername(@RequestParam String username) {
+    //        Optional<Parent> parentOpt = parentRepository.findByUser_Username(username);
+    //        if (parentOpt.isPresent()) {
+    //            Map<String, Object> response = new HashMap<>();
+    //            response.put("id", parentOpt.get().getId());
+    //            return ResponseEntity.ok(response);
+    //        } else {
+    //            return ResponseEntity.status(404).body("Parent not found for username: " + username);
+    //        }
+    //    }
+
     // ✅ 2. تعديل بيانات الحساب
     @PutMapping("/parent-account")
     public ResponseEntity<?> updateAccount(@RequestBody Map<String, Object> request, HttpSession session) {

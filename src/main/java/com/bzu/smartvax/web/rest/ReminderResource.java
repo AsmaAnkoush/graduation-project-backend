@@ -1,9 +1,15 @@
 package com.bzu.smartvax.web.rest;
 
+import com.bzu.smartvax.domain.Parent;
+import com.bzu.smartvax.domain.RecipientType;
+import com.bzu.smartvax.domain.Reminder;
+import com.bzu.smartvax.repository.ParentRepository;
 import com.bzu.smartvax.repository.ReminderRepository;
 import com.bzu.smartvax.service.ReminderService;
 import com.bzu.smartvax.service.dto.ReminderDTO;
+import com.bzu.smartvax.service.mapper.ReminderMapper;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
@@ -42,9 +48,19 @@ public class ReminderResource {
 
     private final ReminderRepository reminderRepository;
 
-    public ReminderResource(ReminderService reminderService, ReminderRepository reminderRepository) {
+    private final ParentRepository parentRepository;
+    private final ReminderMapper reminderMapper;
+
+    public ReminderResource(
+        ReminderService reminderService,
+        ReminderRepository reminderRepository,
+        ParentRepository parentRepository,
+        ReminderMapper reminderMapper
+    ) {
         this.reminderService = reminderService;
         this.reminderRepository = reminderRepository;
+        this.parentRepository = parentRepository;
+        this.reminderMapper = reminderMapper;
     }
 
     /**
@@ -175,5 +191,30 @@ public class ReminderResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/by-session")
+    public ResponseEntity<List<ReminderDTO>> getRemindersForLoggedParent(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+
+        Optional<Parent> parentOpt = parentRepository.findByUser_Id(userId);
+        if (parentOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Reminder> reminders = reminderRepository.findAllByRecipient_Id(parentOpt.get().getId());
+        return ResponseEntity.ok(reminderMapper.toDto(reminders));
+    }
+
+    @GetMapping("/reminders/by-type/{type}")
+    public ResponseEntity<List<ReminderDTO>> getRemindersByRecipientType(@PathVariable RecipientType type) {
+        List<ReminderDTO> list = reminderRepository.findByRecipientType(type).stream().map(reminderMapper::toDto).toList();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping("/reminders/by-worker-center/{workerId}")
+    public ResponseEntity<List<ReminderDTO>> getRemindersByWorkerCenter(@PathVariable Long workerId) {
+        List<ReminderDTO> list = reminderService.findRemindersForHealthWorkerCenter(workerId);
+        return ResponseEntity.ok(list);
     }
 }
