@@ -8,17 +8,18 @@ import com.bzu.smartvax.repository.VaccinationRepository;
 import com.bzu.smartvax.service.dto.FeedbackAnalysisResponseDTO;
 import com.bzu.smartvax.service.dto.FeedbackDTO;
 import com.bzu.smartvax.service.mapper.FeedbackMapper;
+import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-/**
- * Service Implementation for managing {@link com.bzu.smartvax.domain.Feedback}.
- */
 @Service
 @Transactional
 public class FeedbackService {
@@ -26,24 +27,13 @@ public class FeedbackService {
     private static final Logger LOG = LoggerFactory.getLogger(FeedbackService.class);
 
     private final FeedbackRepository feedbackRepository;
-
-    //    @Autowired
-    private ParentRepository parentRepository;
-
-    //    @Autowired
-    private VaccinationRepository vaccinationRepository;
-
-    //    @Autowired
-    //    private AIAnalyzerRepository aiAnalyzerRepository; k
-
-    //    @Autowired
-    private AIAnalyzerService aiAnalyzerService;
-
-    private GeminiAIService geminiAIService;
-
-    private OpenAIService openAIService;
-
+    private final ParentRepository parentRepository;
+    private final VaccinationRepository vaccinationRepository;
+    private final AIAnalyzerService aiAnalyzerService;
+    private final GeminiAIService geminiAIService;
+    private final OpenAIService openAIService;
     private final FeedbackMapper feedbackMapper;
+    private final GeminiVaccineValidationService geminiVaccineValidationService;
 
     public FeedbackService(
         FeedbackRepository feedbackRepository,
@@ -52,7 +42,8 @@ public class FeedbackService {
         VaccinationRepository vaccinationRepository,
         AIAnalyzerService aiAnalyzerService,
         GeminiAIService geminiAIService,
-        OpenAIService openAIService
+        OpenAIService openAIService,
+        GeminiVaccineValidationService geminiVaccineValidationService
     ) {
         this.feedbackRepository = feedbackRepository;
         this.feedbackMapper = feedbackMapper;
@@ -61,133 +52,131 @@ public class FeedbackService {
         this.aiAnalyzerService = aiAnalyzerService;
         this.geminiAIService = geminiAIService;
         this.openAIService = openAIService;
+        this.geminiVaccineValidationService = geminiVaccineValidationService;
     }
 
-    /**
-     * Save a feedback.
-     *
-     * @param feedbackDTO the entity to save.
-     * @return the persisted entity.
-     */
-    public FeedbackDTO save(FeedbackDTO feedbackDTO) {
-        LOG.debug("Request to save Feedback : {}", feedbackDTO);
-        Feedback feedback = feedbackMapper.toEntity(feedbackDTO);
-        feedback = feedbackRepository.save(feedback);
-        return feedbackMapper.toDto(feedback);
-    }
+    // ... باقي الدوال ...
 
     public FeedbackAnalysisResponseDTO submitFeedback(FeedbackDTO dto) throws Exception {
-        //        Parent parent = parentRepository.findById(dto.getParent().getId())
-        //            .orElseThrow(() -> new RuntimeException("Parent not found"));
-
         Vaccination vaccination = vaccinationRepository
             .findById(dto.getVaccination().getId())
             .orElseThrow(() -> new RuntimeException("Vaccination not found"));
 
+        // تحقق من أن النص المدخل متعلق بالتطعيمات أو الأعراض بعدها
+        String symptoms = dto.getSideEffects();
+        boolean isRelated = geminiVaccineValidationService.isVaccineRelated(symptoms);
+        if (!isRelated) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "❌ يرجى كتابة نص متعلق بالتطعيمات أو أعراض ما بعد التطعيم فقط.");
+        }
+
+        // تحليل الأعراض باستخدام NLP
+        String arffVaccineName = convertVaccineNameToArffFormat(vaccination.getName());
+        Map<String, String> symptomsMap = SymptomNLPProcessor.processSymptoms(symptoms);
+
+        String diagnosis = aiAnalyzerService.predictDiagnosis(arffVaccineName, symptomsMap);
+
+        // إنشاء Feedback جديد أو تحديثه مع الأعراض والتشخيص فقط
         Feedback feedback = new Feedback();
-        feedback.setSideEffects(dto.getSideEffects()); // استخدم sideEffects هنا
-        //        feedback.setParent(parent);
+        feedback.setSideEffects(dto.getSideEffects());
         feedback.setVaccination(vaccination);
-        feedback.setMessageText("just a text");
-        //        feedback.setDateSubmitted(LocalDateTime.now());
+        feedback.setMessageText(diagnosis);
+        feedback.setDateSubmitted(Instant.now());
+        feedback.setParent(parentRepository.findById(1L).orElseThrow(() -> new RuntimeException("Parent not found")));
 
         Feedback savedFeedback = feedbackRepository.save(feedback);
 
-        return analyzeAndSaveFeedback(savedFeedback);
-    }
-
-    private FeedbackAnalysisResponseDTO analyzeAndSaveFeedback(Feedback feedback) throws Exception {
-        String symptoms = feedback.getSideEffects();
-        String vaccineName = feedback.getVaccination().getName();
-
-        boolean fever = symptoms.contains("حرارة") || symptoms.contains("سخونة");
-        boolean redness = symptoms.contains("احمرار");
-        boolean swelling = symptoms.contains("انتفاخ");
-        boolean rash = symptoms.contains("طفح") || symptoms.contains("حساسية");
-        boolean headache = symptoms.contains("صداع");
-        boolean vomiting = symptoms.contains("تقيؤ") || symptoms.contains("ترجيع");
-        boolean fatigue = symptoms.contains("تعب");
-        boolean lossOfAppetite = symptoms.contains("فقدان شهية") || symptoms.contains("قلة أكل");
-
-        String diagnosis = aiAnalyzerService.predictDiagnosis(
-            vaccineName,
-            fever,
-            redness,
-            swelling,
-            rash,
-            headache,
-            vomiting,
-            fatigue,
-            lossOfAppetite
-        );
-
         String suggestions = geminiAIService.getSuggestions(symptoms);
 
-        return new FeedbackAnalysisResponseDTO(diagnosis, suggestions);
+        return new FeedbackAnalysisResponseDTO(diagnosis, suggestions, savedFeedback.getId());
     }
 
-    /**
-     * Update a feedback.
-     *
-     * @param feedbackDTO the entity to save.
-     * @return the persisted entity.
-     */
-    public FeedbackDTO update(FeedbackDTO feedbackDTO) {
-        LOG.debug("Request to update Feedback : {}", feedbackDTO);
+    // باقي دوال FeedbackService كما هي...
+
+    private String convertVaccineNameToArffFormat(String name) {
+        return name.replace(" ", "_").replace("(", "").replace(")", "");
+    }
+
+    public FeedbackDTO save(FeedbackDTO feedbackDTO) {
+        LOG.debug("Request to save or update Feedback : {}", feedbackDTO);
         Feedback feedback = feedbackMapper.toEntity(feedbackDTO);
+
+        if (feedback.getId() != null) {
+            Optional<Feedback> existingFeedbackOpt = feedbackRepository.findById(feedback.getId());
+            if (existingFeedbackOpt.isPresent()) {
+                Feedback existingFeedback = existingFeedbackOpt.get();
+                if (feedback.getSideEffects() != null) {
+                    existingFeedback.setSideEffects(feedback.getSideEffects());
+                }
+                if (feedback.getMessageText() != null) {
+                    existingFeedback.setMessageText(feedback.getMessageText());
+                }
+                if (feedback.getTreatment() != null) {
+                    existingFeedback.setTreatment(feedback.getTreatment());
+                }
+                if (feedback.getDateSubmitted() != null) {
+                    existingFeedback.setDateSubmitted(feedback.getDateSubmitted());
+                }
+                if (feedback.getVaccination() != null && feedback.getVaccination().getId() != null) {
+                    existingFeedback.setVaccination(vaccinationRepository.findById(feedback.getVaccination().getId()).orElse(null));
+                }
+                if (feedback.getParent() != null && feedback.getParent().getId() != null) {
+                    existingFeedback.setParent(parentRepository.findById(feedback.getParent().getId()).orElse(null));
+                }
+                feedback = existingFeedback;
+            }
+        } else {
+            feedback.setDateSubmitted(Instant.now());
+        }
+
+        if (feedback.getVaccination() != null && feedback.getVaccination().getId() != null) {
+            Vaccination vaccination = vaccinationRepository
+                .findById(feedback.getVaccination().getId())
+                .orElseThrow(() -> new RuntimeException("Vaccination not found"));
+            feedback.setVaccination(vaccination);
+        }
+        if (feedback.getParent() != null && feedback.getParent().getId() != null) {
+            feedback.setParent(parentRepository.findById(feedback.getParent().getId()).orElse(null));
+        }
+
         feedback = feedbackRepository.save(feedback);
         return feedbackMapper.toDto(feedback);
     }
 
-    /**
-     * Partially update a feedback.
-     *
-     * @param feedbackDTO the entity to update partially.
-     * @return the persisted entity.
-     */
     public Optional<FeedbackDTO> partialUpdate(FeedbackDTO feedbackDTO) {
         LOG.debug("Request to partially update Feedback : {}", feedbackDTO);
 
         return feedbackRepository
             .findById(feedbackDTO.getId())
             .map(existingFeedback -> {
-                feedbackMapper.partialUpdate(existingFeedback, feedbackDTO);
-
+                if (feedbackDTO.getSideEffects() != null) {
+                    existingFeedback.setSideEffects(feedbackDTO.getSideEffects());
+                }
+                if (feedbackDTO.getMessageText() != null) {
+                    existingFeedback.setMessageText(feedbackDTO.getMessageText());
+                }
+                if (feedbackDTO.getTreatment() != null) {
+                    existingFeedback.setTreatment(feedbackDTO.getTreatment());
+                }
+                if (feedbackDTO.getDateSubmitted() != null) {
+                    existingFeedback.setDateSubmitted(feedbackDTO.getDateSubmitted());
+                }
                 return existingFeedback;
             })
             .map(feedbackRepository::save)
             .map(feedbackMapper::toDto);
     }
 
-    /**
-     * Get all the feedbacks.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Page<FeedbackDTO> findAll(Pageable pageable) {
-        LOG.debug("Request to get all Feedbacks");
-        return feedbackRepository.findAll(pageable).map(feedbackMapper::toDto);
+    public Page<FeedbackDTO> findAllByVaccinationId(Long vaccineId, Pageable pageable) {
+        LOG.debug("Request to get all Feedbacks for Vaccination ID: {}", vaccineId);
+        return feedbackRepository.findByVaccinationId(vaccineId, pageable).map(feedbackMapper::toDto);
     }
 
-    /**
-     * Get one feedback by id.
-     *
-     * @param id the id of the entity.
-     * @return the entity.
-     */
     @Transactional(readOnly = true)
     public Optional<FeedbackDTO> findOne(Long id) {
         LOG.debug("Request to get Feedback : {}", id);
         return feedbackRepository.findById(id).map(feedbackMapper::toDto);
     }
 
-    /**
-     * Delete the feedback by id.
-     *
-     * @param id the id of the entity.
-     */
     public void delete(Long id) {
         LOG.debug("Request to delete Feedback : {}", id);
         feedbackRepository.deleteById(id);
