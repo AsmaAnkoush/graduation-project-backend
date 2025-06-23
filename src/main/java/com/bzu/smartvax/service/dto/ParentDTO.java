@@ -24,6 +24,16 @@ public class ParentDTO implements Serializable {
     @NotNull
     private String role;
 
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Long getId() {
         return id;
     }

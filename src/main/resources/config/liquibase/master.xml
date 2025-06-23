@@ -33,6 +33,10 @@
     <include file="config/liquibase/changelog/20250521212052_create_civil_chidren.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20250521212056_create_users.xml" relativeToChangelogFile="false"/>
   <include file="config/liquibase/changelog/20250619_reminder_update.xml" relativeToChangelogFile="false"/>
+  <include file="classpath:config/liquibase/changelog/20250621T-add-reminder-type.xml" relativeToChangelogFile="false"/>
+  <include file="config/liquibase/changelog/20250621T_add_handled_fields_to_reminder.xml" relativeToChangelogFile="false"/>
+  <include file="config/liquibase/changelog/20250622_add_parent_viewed_to_reminder.xml" relativeToChangelogFile="false"/>
+  <include file="config/liquibase/changelog/2025-06-23_add_email_to_parent.xml" relativeToChangelogFile="false"/>
 
   <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
