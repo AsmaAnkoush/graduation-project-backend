@@ -9,6 +9,7 @@ import com.bzu.smartvax.service.dto.ReminderDTO;
 import com.bzu.smartvax.service.mapper.ReminderMapper;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -162,6 +163,8 @@ public class ReminderService {
         reminder.setRecipientType(RecipientType.PARENT);
         reminder.setRecipient(recipient);
         reminder.setAppointment(appointment);
+        reminder.setType(ReminderType.UPCOMING);
+
         return reminderRepository.save(reminder);
     }
 
@@ -238,6 +241,7 @@ public class ReminderService {
         reminder.setRecipientType(RecipientType.HEALTH_WORKER);
         reminder.setChild(child);
         reminder.setVaccinationCenter(center);
+        reminder.setType(ReminderType.MISSED);
 
         reminderRepository.save(reminder);
         log.info("✅ Reminder created for child {} for message: {}", childId, message);
@@ -259,5 +263,110 @@ public class ReminderService {
             .stream()
             .map(reminderMapper::toDto)
             .toList();
+    }
+
+    @Scheduled(fixedRate = 60000) // كل دقيقة
+    public void createRemindersForMissedAppointments() {
+        List<Appointment> missedAppointments = appointmentRepository
+            .findAll()
+            .stream()
+            .filter(a -> "missed".equalsIgnoreCase(a.getStatus()))
+            .filter(a -> !reminderRepository.existsByAppointmentAndRecipientType(a, RecipientType.PARENT))
+            .toList();
+
+        for (Appointment a : missedAppointments) {
+            if (a.getChild() == null || a.getParent() == null) continue;
+
+            Reminder reminder = new Reminder();
+            reminder.setMessageText(
+                "⚠️ فاتكم موعد تطعيم الطفل " +
+                a.getChild().getName() +
+                " بتاريخ " +
+                a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate() +
+                ". يرجى حجز موعد جديد والتواصل مع المركز الصحي."
+            );
+            reminder.setRecipient(a.getParent());
+            reminder.setRecipientType(RecipientType.PARENT);
+            reminder.setChild(a.getChild());
+            reminder.setAppointment(a);
+            reminder.setScheduledDate(LocalDateTime.now());
+            reminder.setSent(false);
+            reminder.setType(ReminderType.MISSED);
+
+            reminderRepository.save(reminder);
+        }
+    }
+
+    //    @Scheduled(fixedRate = 60000) // كل دقيقة
+    //    @Transactional
+    //    public void createPostVaccinationReminders() {
+    //        List<Appointment> completedAppointments = appointmentRepository.findAll().stream()
+    //            .filter(a -> "COMPLETED".equalsIgnoreCase(a.getStatus()))
+    //            .filter(a -> !reminderRepository.existsByAppointmentAndRecipientType(a, RecipientType.PARENT))
+    //            .toList();
+    //
+    //        for (Appointment a : completedAppointments) {
+    //            if (a.getChild() == null || a.getParent() == null) continue;
+    //
+    //            String childName = a.getChild().getName();
+    //            String date = a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate().toString();
+    //
+    //            String message = "✅ شكرًا لحضوركم لموعد تطعيم الطفل " + childName + " بتاريخ " + date +
+    //                ". نوصي بمراقبة الطفل خلال 24 ساعة القادمة. \n\n" +
+    //                "📍 إذا لاحظتم أي أعراض، يمكنكم استخدام خاصية الذكاء الاصطناعي في التطبيق لتقييم الحالة.\n" +
+    //                "🤖 شات بوت SmartVax متاح لمساعدتكم.";
+    //
+    //            Reminder r = new Reminder();
+    //            r.setMessageText(message);
+    //            r.setRecipient(a.getParent());
+    //            r.setRecipientType(RecipientType.PARENT);
+    //            r.setChild(a.getChild());
+    //            r.setAppointment(a);
+    //            r.setScheduledDate(LocalDateTime.now()); // مباشر أو بعد ساعة لو بدك
+    //            r.setSent(false);
+    //
+    //            reminderRepository.save(r);
+    //        }
+    //    }
+
+    @Scheduled(fixedRate = 60000) // كل دقيقة
+    @Transactional
+    public void createPostVaccinationReminders() {
+        List<Appointment> completedAppointments = appointmentRepository
+            .findAll()
+            .stream()
+            .filter(a -> "COMPLETED".equalsIgnoreCase(a.getStatus()))
+            .filter(a ->
+                reminderRepository.findByAppointmentAndRecipientTypeAndType(a, RecipientType.PARENT, ReminderType.POST_VACCINE).isEmpty()
+            )
+            .toList();
+
+        for (Appointment a : completedAppointments) {
+            if (a.getChild() == null || a.getParent() == null) continue;
+
+            String childName = a.getChild().getName();
+            String date = a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate().toString();
+
+            String message =
+                "✅ شكرًا لحضوركم لموعد تطعيم الطفل " +
+                childName +
+                " بتاريخ " +
+                date +
+                ". نوصي بمراقبة الطفل خلال 24 ساعة القادمة.\n\n" +
+                "📍 إذا لاحظتم أي أعراض، يمكنكم استخدام خاصية الذكاء الاصطناعي في التطبيق لتقييم الحالة.\n" +
+                "🤖 شات بوت SmartVax متاح دائمًا لمساعدتكم.";
+
+            Reminder r = new Reminder();
+            r.setMessageText(message);
+            r.setRecipient(a.getParent());
+            r.setRecipientType(RecipientType.PARENT);
+            r.setChild(a.getChild());
+            r.setAppointment(a);
+            r.setScheduledDate(LocalDateTime.now()); // ترسل فورًا
+            r.setSent(false);
+            r.setType(ReminderType.POST_VACCINE);
+
+            reminderRepository.save(r);
+        }
     }
 }

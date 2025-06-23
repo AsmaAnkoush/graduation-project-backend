@@ -13,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,9 @@ public class ReminderScheduler {
     private final Logger log = LoggerFactory.getLogger(ReminderScheduler.class);
     private final AppointmentRepository appointmentRepository;
     private final ReminderRepository reminderRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public ReminderScheduler(
         ReminderService reminderService,
@@ -37,32 +41,80 @@ public class ReminderScheduler {
     /**
      * Scheduled task that runs every hour to send reminders.
 //     */
+
     //    @Scheduled(cron = "0 0 * * * *") // ⏰ كل ساعة على رأس الساعة
     // @Scheduled(fixedRate = 30000) // كل 30 ثانية
     //@Transactional
     @Scheduled(fixedRate = 10000)
     public void sendScheduledReminders() {
-        System.out.println("==============================================================");
-        System.out.println("🔄 Scheduler is running: Checking for due reminders...");
+        try {
+            System.out.println("==============================================================");
+            System.out.println("🔄 Scheduler is running: Checking for due reminders...");
 
-        List<Reminder> dueReminders = reminderService.findDueReminders();
+            List<Reminder> dueReminders = reminderService.findDueReminders();
 
-        System.out.println("==== التذكيرات المستحقة (تفاصيل): ====");
-        dueReminders.forEach(r -> {
-            System.out.println("➡️ ID: " + r.getId());
-            System.out.println("   📆 Date: " + r.getScheduledDate());
-            System.out.println("   ✅ Sent: " + r.getSent());
-            System.out.println("   👤 Type: " + r.getRecipientType());
-        });
+            System.out.println("==== التذكيرات المستحقة (تفاصيل): ====");
+            dueReminders.forEach(r -> {
+                System.out.println("➡️ ID: " + r.getId());
+                System.out.println("   📆 Date: " + r.getScheduledDate());
+                System.out.println("   ✅ Sent: " + r.getSent());
+                System.out.println("   👤 Type: " + r.getRecipientType());
+            });
 
-        System.out.println("the size is ::: " + dueReminders.size());
-        log.info("✅ تم فحص {} تذكير مستحق.", dueReminders.size());
+            System.out.println("the size is ::: " + dueReminders.size());
+            log.info("✅ تم فحص {} تذكير مستحق.", dueReminders.size());
 
-        for (Reminder reminder : dueReminders) {
-            System.out.println("📤 إرسال تذكير لـ " + reminder.getRecipientType() + ": " + reminder.getMessageText());
-            reminderService.markAsSent(reminder);
+            for (Reminder reminder : dueReminders) {
+                System.out.println("📤 إرسال تذكير لـ " + reminder.getRecipientType() + ": " + reminder.getMessageText());
+
+                String recipientEmail = null;
+
+                if (reminder.getRecipientType() == RecipientType.PARENT && reminder.getRecipient() != null) {
+                    recipientEmail = reminder.getRecipient().getEmail();
+                }
+                //            else if (reminder.getRecipientType() == RecipientType.HEALTH_WORKER && reminder.getHandledByWorker() != null) {
+                //                recipientEmail = reminder.getHandledByWorker().getEmail(); // تأكد أن health worker فيه email
+                //            }
+
+                if (recipientEmail != null && !recipientEmail.isBlank()) {
+                    String subject =
+                        switch (reminder.getType()) {
+                            case UPCOMING -> "📅 موعد تطعيم قادم لطفلك";
+                            case MISSED -> "⚠️ فات موعد التطعيم!";
+                            case POST_VACCINE -> "✅ شكرًا لحضوركم – هل ظهرت أعراض؟";
+                            default -> "📢 تذكير من SmartVax";
+                        };
+                    emailService.sendReminderEmail(recipientEmail, subject, reminder.getMessageText());
+                } else {
+                    System.out.println("⚠️ لم يتم إرسال الإيميل لأن العنوان غير متوفر (recipientEmail = null)");
+                }
+
+                // تحديث التذكير كمرسل
+                reminderService.markAsSent(reminder);
+            }
+        } catch (Exception e) {
+            System.out.println("**************************************************************");
+            System.out.println(e);
+            System.out.println("**************************************************************");
         }
     }
+
+    //        for (Reminder reminder : dueReminders) {
+    //            System.out.println("📤 إرسال تذكير لـ " + reminder.getRecipientType() + ": " + reminder.getMessageText());
+    //
+    //            String recipientEmail = reminder.getRecipient().getEmail();
+    //            if (recipientEmail != null && !recipientEmail.isBlank()) {
+    //                String subject = switch (reminder.getType()) {
+    //                    case UPCOMING -> "📅 موعد تطعيم قادم لطفلك";
+    //                    case MISSED -> "⚠️ فات موعد التطعيم!";
+    //                    case POST_VACCINE -> "✅ شكرًا لحضوركم – هل ظهرت أعراض؟";
+    //                    default -> "📢 تذكير من SmartVax";
+    //                };
+    //                emailService.sendReminderEmail(recipientEmail, subject, reminder.getMessageText());
+    //            }
+    //
+    //            reminderService.markAsSent(reminder);
+    //        }
 
     @Scheduled(fixedRate = 30000)
     //    @Scheduled(fixedRate = 86400000) // ⏰ كل 24 ساعة

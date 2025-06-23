@@ -1,0 +1,24 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+  <changeSet id="20250621-1" author="smartvax">
+    <addColumn tableName="reminder">
+      <column name="handled_by_worker_id" type="bigint"/>
+      <column name="handled_date" type="datetime"/>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="20250621-2" author="smartvax">
+    <addForeignKeyConstraint
+      baseTableName="reminder"
+      baseColumnNames="handled_by_worker_id"
+      referencedTableName="health_worker"
+      referencedColumnNames="id"
+      constraintName="fk_reminder_handled_worker"/>
+  </changeSet>
+
+</databaseChangeLog>

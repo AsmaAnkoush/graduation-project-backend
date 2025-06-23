@@ -53,7 +53,54 @@ public class Reminder implements Serializable {
     @JsonIgnoreProperties(value = { "healthWorkers", "children" }, allowSetters = true)
     private VaccinationCenter vaccinationCenter;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private ReminderType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "handled_by_worker_id")
+    @JsonIgnoreProperties(value = { "vaccinationCenter" }, allowSetters = true)
+    private HealthWorker handledByWorker;
+
+    @Column(name = "handled_date")
+    private LocalDateTime handledDate;
+
+    @Column(name = "parent_viewed", nullable = false)
+    private boolean parentViewed = false;
+
     // Getters & Setters
+
+    public boolean isParentViewed() {
+        return parentViewed;
+    }
+
+    public void setParentViewed(boolean parentViewed) {
+        this.parentViewed = parentViewed;
+    }
+
+    public HealthWorker getHandledByWorker() {
+        return handledByWorker;
+    }
+
+    public void setHandledByWorker(HealthWorker handledByWorker) {
+        this.handledByWorker = handledByWorker;
+    }
+
+    public LocalDateTime getHandledDate() {
+        return handledDate;
+    }
+
+    public void setHandledDate(LocalDateTime handledDate) {
+        this.handledDate = handledDate;
+    }
+
+    public ReminderType getType() {
+        return type;
+    }
+
+    public void setType(ReminderType type) {
+        this.type = type;
+    }
 
     public VaccinationCenter getVaccinationCenter() {
         return vaccinationCenter;

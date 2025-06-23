@@ -1,8 +1,7 @@
 package com.bzu.smartvax.web.rest;
 
-import com.bzu.smartvax.domain.Parent;
-import com.bzu.smartvax.domain.RecipientType;
-import com.bzu.smartvax.domain.Reminder;
+import com.bzu.smartvax.domain.*;
+import com.bzu.smartvax.repository.HealthWorkerRepository;
 import com.bzu.smartvax.repository.ParentRepository;
 import com.bzu.smartvax.repository.ReminderRepository;
 import com.bzu.smartvax.service.ReminderService;
@@ -14,6 +13,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -50,17 +52,20 @@ public class ReminderResource {
 
     private final ParentRepository parentRepository;
     private final ReminderMapper reminderMapper;
+    private final HealthWorkerRepository healthWorkerRepository;
 
     public ReminderResource(
         ReminderService reminderService,
         ReminderRepository reminderRepository,
         ParentRepository parentRepository,
-        ReminderMapper reminderMapper
+        ReminderMapper reminderMapper,
+        HealthWorkerRepository healthWorkerRepository
     ) {
         this.reminderService = reminderService;
         this.reminderRepository = reminderRepository;
         this.parentRepository = parentRepository;
         this.reminderMapper = reminderMapper;
+        this.healthWorkerRepository = healthWorkerRepository;
     }
 
     /**
@@ -216,5 +221,73 @@ public class ReminderResource {
     public ResponseEntity<List<ReminderDTO>> getRemindersByWorkerCenter(@PathVariable Long workerId) {
         List<ReminderDTO> list = reminderService.findRemindersForHealthWorkerCenter(workerId);
         return ResponseEntity.ok(list);
+    }
+
+    @PatchMapping("/mark-handled/{id}")
+    public ResponseEntity<Void> markHandled(@PathVariable Long id, HttpSession session) {
+        Users user = (Users) session.getAttribute("user");
+
+        if (user == null || !"HEALTH_WORKER".equals(user.getRole())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Long healthWorkerId = user.getReferenceId(); // مفتاح الهيلث ووركر المرتبط باليوزر
+
+        Optional<Reminder> optionalReminder = reminderRepository.findWithChildAndCenterById(id);
+        if (optionalReminder.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Reminder reminder = optionalReminder.get();
+
+        // تحقق إن مركز التطعيم للطفل نفسه الموجود في حساب العامل الصحي
+        Optional<HealthWorker> optionalHW = healthWorkerRepository.findById(healthWorkerId);
+        if (optionalHW.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        HealthWorker hw = optionalHW.get();
+        if (!reminder.getChild().getVaccinationCenter().getId().equals(hw.getVaccinationCenter().getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // حفظ من تعامل مع التذكير وتاريخ التعامل
+        reminder.setHandledByWorker(hw);
+        reminder.setHandledDate(LocalDateTime.now()); // فقط التاريخ بدون الوقت
+        reminderRepository.save(reminder);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/mark-parent-viewed/{id}")
+    public ResponseEntity<Void> markParentViewed(@PathVariable Long id, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Optional<Parent> parentOpt = parentRepository.findByUser_Id(userId);
+        if (parentOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Optional<Reminder> optionalReminder = reminderRepository.findById(id);
+        if (optionalReminder.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Reminder reminder = optionalReminder.get();
+
+        // تحقق أن التذكير فعليًا موجه لهذا الأب
+        if (!reminder.getRecipient().getId().equals(parentOpt.get().getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        // علّمه كمقروء
+        reminder.setParentViewed(true);
+        reminderRepository.save(reminder);
+
+        return ResponseEntity.ok().build();
     }
 }

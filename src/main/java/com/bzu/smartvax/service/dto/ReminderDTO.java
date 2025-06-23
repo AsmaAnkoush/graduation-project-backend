@@ -1,6 +1,7 @@
 package com.bzu.smartvax.service.dto;
 
 import com.bzu.smartvax.domain.RecipientType;
+import com.bzu.smartvax.domain.ReminderType;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -27,6 +28,54 @@ public class ReminderDTO implements Serializable {
 
     private RecipientType recipientType;
     private String childId;
+    private ReminderType type;
+
+    private HealthWorkerDTO handledByWorker;
+    private LocalDateTime handledDate;
+
+    private Long handledByWorkerId;
+
+    private boolean parentViewed;
+
+    public boolean isParentViewed() {
+        return parentViewed;
+    }
+
+    public void setParentViewed(boolean parentViewed) {
+        this.parentViewed = parentViewed;
+    }
+
+    public Long getHandledByWorkerId() {
+        return handledByWorkerId;
+    }
+
+    public void setHandledByWorkerId(Long handledByWorkerId) {
+        this.handledByWorkerId = handledByWorkerId;
+    }
+
+    public HealthWorkerDTO getHandledByWorker() {
+        return handledByWorker;
+    }
+
+    public void setHandledByWorker(HealthWorkerDTO handledByWorker) {
+        this.handledByWorker = handledByWorker;
+    }
+
+    public LocalDateTime getHandledDate() {
+        return handledDate;
+    }
+
+    public void setHandledDate(LocalDateTime handledDate) {
+        this.handledDate = handledDate;
+    }
+
+    public ReminderType getType() {
+        return type;
+    }
+
+    public void setType(ReminderType type) {
+        this.type = type;
+    }
 
     public Long getId() {
         return id;

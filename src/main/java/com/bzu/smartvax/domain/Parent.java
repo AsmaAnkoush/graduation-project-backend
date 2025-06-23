@@ -31,7 +31,19 @@ public class Parent implements Serializable {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Child> children = new ArrayList<>();
 
+    @Column(name = "email")
+    private String email;
+
     // 🟦 Getters و Setters
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Long getId() {
         return id;
     }
