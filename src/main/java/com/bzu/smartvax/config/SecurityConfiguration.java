@@ -124,6 +124,8 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers(mvc.pattern("/api/reminders/**"))
                     .permitAll()
+                    .requestMatchers(mvc.pattern("/api/growth-analysis/**"))
+                    .permitAll()
                     .requestMatchers(mvc.pattern("/app/**"))
                     .permitAll()
             )
