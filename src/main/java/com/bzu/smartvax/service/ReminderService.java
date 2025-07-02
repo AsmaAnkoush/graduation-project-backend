@@ -280,10 +280,10 @@ public class ReminderService {
             Reminder reminder = new Reminder();
             reminder.setMessageText(
                 "⚠️ فاتكم موعد تطعيم الطفل " +
-                a.getChild().getName() +
-                " بتاريخ " +
-                a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate() +
-                ". يرجى حجز موعد جديد والتواصل مع المركز الصحي."
+                    a.getChild().getName() +
+                    " بتاريخ " +
+                    a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate() +
+                    ". يرجى حجز موعد جديد والتواصل مع المركز الصحي."
             );
             reminder.setRecipient(a.getParent());
             reminder.setRecipientType(RecipientType.PARENT);
@@ -296,38 +296,6 @@ public class ReminderService {
             reminderRepository.save(reminder);
         }
     }
-
-    //    @Scheduled(fixedRate = 60000) // كل دقيقة
-    //    @Transactional
-    //    public void createPostVaccinationReminders() {
-    //        List<Appointment> completedAppointments = appointmentRepository.findAll().stream()
-    //            .filter(a -> "COMPLETED".equalsIgnoreCase(a.getStatus()))
-    //            .filter(a -> !reminderRepository.existsByAppointmentAndRecipientType(a, RecipientType.PARENT))
-    //            .toList();
-    //
-    //        for (Appointment a : completedAppointments) {
-    //            if (a.getChild() == null || a.getParent() == null) continue;
-    //
-    //            String childName = a.getChild().getName();
-    //            String date = a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate().toString();
-    //
-    //            String message = "✅ شكرًا لحضوركم لموعد تطعيم الطفل " + childName + " بتاريخ " + date +
-    //                ". نوصي بمراقبة الطفل خلال 24 ساعة القادمة. \n\n" +
-    //                "📍 إذا لاحظتم أي أعراض، يمكنكم استخدام خاصية الذكاء الاصطناعي في التطبيق لتقييم الحالة.\n" +
-    //                "🤖 شات بوت SmartVax متاح لمساعدتكم.";
-    //
-    //            Reminder r = new Reminder();
-    //            r.setMessageText(message);
-    //            r.setRecipient(a.getParent());
-    //            r.setRecipientType(RecipientType.PARENT);
-    //            r.setChild(a.getChild());
-    //            r.setAppointment(a);
-    //            r.setScheduledDate(LocalDateTime.now()); // مباشر أو بعد ساعة لو بدك
-    //            r.setSent(false);
-    //
-    //            reminderRepository.save(r);
-    //        }
-    //    }
 
     @Scheduled(fixedRate = 60000) // كل دقيقة
     @Transactional
@@ -348,13 +316,12 @@ public class ReminderService {
             String date = a.getAppointmentDate().atZone(ZoneId.systemDefault()).toLocalDate().toString();
 
             String message =
-                "✅ شكرًا لحضوركم لموعد تطعيم الطفل " +
-                childName +
-                " بتاريخ " +
-                date +
-                ". نوصي بمراقبة الطفل خلال 24 ساعة القادمة.\n\n" +
-                "📍 إذا لاحظتم أي أعراض، يمكنكم استخدام خاصية الذكاء الاصطناعي في التطبيق لتقييم الحالة.\n" +
-                "🤖 شات بوت SmartVax متاح دائمًا لمساعدتكم.";
+                "✅ شكرًا لحضوركم موعد تطعيم الطفل " +
+                    childName +
+                    " بتاريخ " +
+                    date +
+                    ". نوصي بمراقبة طفلك بعناية خلال الـ 24 ساعة القادمة.\n\n" +
+                    "📍 إذا لاحظتم أي أعراض، يمكنكم تقييمها باستخدام **أداة تحليل الأعراض بالذكاء الاصطناعي**، المتوفرة في صفحة تقويم التطعيمات. فقط اضغط على موعد التطعيم المكتمل لترى خيار 'تحليل الأعراض' والحصول على إرشادات مفيدة. الأداة متاحة دائمًا لمساعدتكم.";
 
             Reminder r = new Reminder();
             r.setMessageText(message);

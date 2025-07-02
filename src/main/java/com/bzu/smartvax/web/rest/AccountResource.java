@@ -86,10 +86,18 @@ public class AccountResource {
      */
     @GetMapping("/account")
     public AdminUserDTO getAccount() {
-        return userService
-            .getUserWithAuthorities()
-            .map(AdminUserDTO::new)
-            .orElseThrow(() -> new AccountResourceException("User could not be found"));
+        AdminUserDTO fakeUser = new AdminUserDTO();
+        fakeUser.setLogin("admin");
+        fakeUser.setFirstName("Admin");
+        fakeUser.setLastName("User");
+        fakeUser.setEmail("admin@example.com");
+        fakeUser.setActivated(true);
+        fakeUser.setLangKey("en");
+        Set<String> authorities = new HashSet<>();
+        authorities.add("ROLE_USER");
+        authorities.add("ROLE_ADMIN");
+        fakeUser.setAuthorities(authorities);
+        return fakeUser;
     }
 
     /**

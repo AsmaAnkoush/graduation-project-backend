@@ -102,6 +102,10 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers(mvc.pattern("/management/health/**"))
                     .permitAll()
+                    .requestMatchers(mvc.pattern("/api/growth-analysis"))
+                    .permitAll()
+                    .requestMatchers(mvc.pattern("/api/growth-analysis/**"))
+                    .permitAll()
                     .requestMatchers("/api/additional-vaccine-child", "/api/additional-vaccine-child/**")
                     .permitAll()
                     .requestMatchers("/api/additional-vaccines", "/api/additional-vaccines/**")
@@ -120,14 +124,18 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers("/api/children/profile/**")
                     .permitAll()
+
+                    .requestMatchers(mvc.pattern("/api/ai/ask-vaccine-bot"))
+
+                    .permitAll()
                     .requestMatchers(mvc.pattern("/api/reminders/by-parent/**"))
                     .permitAll()
                     .requestMatchers(mvc.pattern("/api/reminders/**"))
                     .permitAll()
-                    .requestMatchers(mvc.pattern("/api/growth-analysis/**"))
-                    .permitAll()
                     .requestMatchers(mvc.pattern("/app/**"))
                     .permitAll()
+                    .requestMatchers(mvc.pattern("/app/**")).permitAll()
+                    .anyRequest().permitAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 

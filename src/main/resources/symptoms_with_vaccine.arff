@@ -1,32 +1,104 @@
-@RELATION التطعيمات_والأعراض_الفلسطينية
+@RELATION التطعيمات_الفلسطينية_حسب_الجرعة_موسعة
 
-@ATTRIBUTE التطعيم {BCG,HepB,IPV,OPV,Pentavalent,PCV,MMR,DTP,DT}
-@ATTRIBUTE الحمى {yes, no}
-@ATTRIBUTE الاحمرار {yes, no}
-@ATTRIBUTE التورم {yes, no}
-@ATTRIBUTE الطفح_الجلدي {yes, no}
-@ATTRIBUTE الصداع {yes, no}
-@ATTRIBUTE القيء {yes, no}
-@ATTRIBUTE التعب {yes, no}
-@ATTRIBUTE فقدان_الشهية {yes, no}
+@ATTRIBUTE التطعيم {
+    السل_الرئوي_الدرن,
+    التهاب_الكبد_البائي_الجرعة_الأولى,
+    شلل_الأطفال_بالحقن_الجرعة_الأولى,
+    شلل_الأطفال_بالحقن_الجرعة_الثانية,
+    التطعيم_الخماسي_الجرعة_الأولى,
+    شلل_الأطفال_الفموي_الجرعة_الأولى,
+    التطعيم_ضد_المكورات_الرئوية_الجرعة_الأولى,
+    التطعيم_الخماسي_الجرعة_الثانية,
+    شلل_الأطفال_الفموي_الجرعة_الثانية,
+    التطعيم_ضد_المكورات_الرئوية_الجرعة_الثانية,
+    التطعيم_الخماسي_الجرعة_الثالثة,
+    شلل_الأطفال_الفموي_الجرعة_الثالثة,
+    لقاح_الحصبة_الحصبة_الألمانية_النكاف_الجرعة_الأولى,
+    التطعيم_ضد_المكورات_الرئوية_الجرعة_الثالثة,
+    الدفتيريا_الكزاز_الشاهوق,
+    لقاح_الحصبة_الحصبة_الألمانية_النكاف_الجرعة_الثانية,
+    شلل_الأطفال_الفموي_الجرعة_الرابعة,
+    الدفتيريا_الكزاز,
+    شلل_الأطفال_الفموي,
+    الدفتيريا_الكزاز_
+}
+
+@ATTRIBUTE الحمى {yes,no}
+@ATTRIBUTE الحرارة {yes,no}
+@ATTRIBUTE ألم_الموضع {yes,no}
+@ATTRIBUTE التورم {yes,no}
+@ATTRIBUTE الاحمرار {yes,no}
+@ATTRIBUTE الطفح_الجلدي {yes,no}
+@ATTRIBUTE الصداع {yes,no}
+@ATTRIBUTE التعب {yes,no}
+@ATTRIBUTE الإرهاق {yes,no}
+@ATTRIBUTE فقدان_الشهية {yes,no}
+@ATTRIBUTE القيء {yes,no}
+@ATTRIBUTE الإسهال {yes,no}
+@ATTRIBUTE الإمساك {yes,no}
+@ATTRIBUTE الألم_العضلي {yes,no}
+@ATTRIBUTE انتفاخ_الغدد_اللمفاوية {yes,no}
+@ATTRIBUTE تورم_الوجه {yes,no}
+@ATTRIBUTE صعوبة_التنفس {yes,no}
+@ATTRIBUTE السعال {yes,no}
+@ATTRIBUTE العطاس {yes,no}
+@ATTRIBUTE النزيف {yes,no}
+@ATTRIBUTE الحكة {yes,no}
+@ATTRIBUTE التحسس_الجلدي {yes,no}
+@ATTRIBUTE الرعشة {yes,no}
+@ATTRIBUTE الدوار {yes,no}
+@ATTRIBUTE الإغماء {yes,no}
+@ATTRIBUTE البكاء_المستمر {yes,no}
+@ATTRIBUTE التشنجات {yes,no}
+@ATTRIBUTE حكة_العين {yes,no}
+@ATTRIBUTE ألم_المفاصل {yes,no}
+@ATTRIBUTE فقدان_الوعي {yes,no}
+@ATTRIBUTE الشحوب {yes,no}
+@ATTRIBUTE الجفاف {yes,no}
+@ATTRIBUTE تقرح_الفم {yes,no}
+@ATTRIBUTE الطفح_الجسمي {yes,no}
+@ATTRIBUTE زيادة_ضربات_القلب {yes,no}
+@ATTRIBUTE انخفاض_ضغط_الدم {yes,no}
+@ATTRIBUTE تورم_الأطراف {yes,no}
+@ATTRIBUTE آلام_البطن {yes,no}
+@ATTRIBUTE آلام_الظهر {yes,no}
+@ATTRIBUTE الغثيان {yes,no}
+@ATTRIBUTE القشعريرة {yes,no}
+@ATTRIBUTE تقيؤ_دم {yes,no}
+@ATTRIBUTE ارتفاع_ضغط_الدم {yes,no}
+@ATTRIBUTE فقدان_مؤقت_للحركة {yes,no}
+@ATTRIBUTE الحساسية_المفرطة {yes,no}
+@ATTRIBUTE انسداد_مجرى_التنفس {yes,no}
+@ATTRIBUTE صعوبة_البلع {yes,no}
+@ATTRIBUTE الضعف_العام {yes,no}
+@ATTRIBUTE الدوخة {yes,no}
+@ATTRIBUTE زيادة_إفراز_الدموع {yes,no}
+@ATTRIBUTE احتقان_الأنف {yes,no}
+@ATTRIBUTE التهاب_الحلق {yes,no}
+@ATTRIBUTE التعرق_الزائد {yes,no}
+@ATTRIBUTE انتفاخ_العينين {yes,no}
+@ATTRIBUTE تنميل {yes,no}
+@ATTRIBUTE صعوبة_الكلام {yes,no}
+@ATTRIBUTE طفح_مائي {yes,no}
+@ATTRIBUTE ألم_الأذن {yes,no}
+@ATTRIBUTE فقدان_السمع {yes,no}
+@ATTRIBUTE فقدان_الرؤية {yes,no}
+@ATTRIBUTE احتباس_البول {yes,no}
+@ATTRIBUTE بحة_الصوت {yes,no}
+@ATTRIBUTE سرعة_التنفس {yes,no}
+@ATTRIBUTE آلام_الصدر {yes,no}
+@ATTRIBUTE فقدان_التوازن {yes,no}
+@ATTRIBUTE الهلوسة {yes,no}
+@ATTRIBUTE طنين_الأذن {yes,no}
+@ATTRIBUTE حساسية_للضوء {yes,no}
+@ATTRIBUTE نزيف_من_الأنف {yes,no}
+
 @ATTRIBUTE التشخيص {ردة_فعل_طبيعية,تحسس,حالة_خطيرة}
 
 @DATA
-BCG,yes,yes,yes,no,no,yes,no,yes,تحسس
-BCG,no,no,no,no,no,yes,yes,yes,ردة_فعل_طبيعية
-HepB,yes,no,no,no,no,yes,no,no,تحسس
-HepB,no,yes,yes,yes,yes,yes,no,no,تحسس
-IPV,yes,no,no,no,yes,yes,no,no,ردة_فعل_طبيعية
-IPV,yes,no,no,yes,yes,no,yes,no,ردة_فعل_طبيعية
-OPV,yes,yes,no,yes,no,yes,no,yes,تحسس
-OPV,yes,no,no,yes,yes,yes,yes,yes,ردة_فعل_طبيعية
-Pentavalent,no,no,yes,no,no,no,no,no,ردة_فعل_طبيعية
-Pentavalent,no,yes,yes,yes,no,no,yes,yes,ردة_فعل_طبيعية
-PCV,yes,no,yes,yes,yes,no,no,yes,ردة_فعل_طبيعية
-PCV,no,no,yes,no,no,yes,yes,no,حالة_خطيرة
-MMR,yes,yes,no,no,yes,yes,yes,no,ردة_فعل_طبيعية
-MMR,yes,yes,no,no,no,yes,yes,yes,ردة_فعل_طبيعية
-DTP,yes,yes,yes,no,no,yes,no,no,حالة_خطيرة
-DTP,no,no,no,yes,no,no,no,no,تحسس
-DT,yes,no,yes,no,no,yes,yes,no,ردة_فعل_طبيعية
-DT,yes,yes,no,no,no,no,no,yes,ردة_فعل_طبيعية
+السل_الرئوي_الدرن,yes,yes,yes,no,yes,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,ردة_فعل_طبيعية
+التهاب_الكبد_البائي_الجرعة_الأولى,yes,no,no,yes,no,yes,yes,no,no,yes,no,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,تحسس
+شلل_الأطفال_بالحقن_الجرعة_الأولى,no,no,yes,no,yes,no,yes,no,no,no,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,ردة_فعل_طبيعية
+التطعيم_الخماسي_الجرعة_الأولى,yes,yes,yes,yes,no,yes,yes,no,yes,yes,no,no,yes,no,no,yes,yes,no,no,no,no,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,حالة_خطيرة
+لقاح_الحصبة_الحصبة_الألمانية_النكاف_الجرعة_الأولى,yes,yes,no,no,yes,yes,yes,no,yes,yes,no,no,no,no,no,no,no,no,yes,no,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,تحسس
+شلل_الأطفال_الفموي_الجرعة_الأولى,yes,no,yes,no,no,no,no,no,yes,no,yes,no,no,yes,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,ردة_فعل_طبيعية
