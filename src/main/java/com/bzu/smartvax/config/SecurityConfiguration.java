@@ -124,12 +124,18 @@ public class SecurityConfiguration {
                     .permitAll()
                     .requestMatchers("/api/children/profile/**")
                     .permitAll()
+
+                    .requestMatchers(mvc.pattern("/api/ai/ask-vaccine-bot"))
+
+                    .permitAll()
                     .requestMatchers(mvc.pattern("/api/reminders/by-parent/**"))
                     .permitAll()
                     .requestMatchers(mvc.pattern("/api/reminders/**"))
                     .permitAll()
                     .requestMatchers(mvc.pattern("/app/**"))
                     .permitAll()
+                    .requestMatchers(mvc.pattern("/app/**")).permitAll()
+                    .anyRequest().permitAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
 

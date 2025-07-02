@@ -58,14 +58,18 @@ public class ParentRegistrationController {
         user.setRole("PARENT");
         usersRepository.save(user);
 
-        // ✅ 2. إنشاء الأب وربطه بالمستخدم
+        // ... باقي الكود كما هو
+
+// ✅ 2. إنشاء الأب وربطه بالمستخدم
         Parent parent = new Parent();
         parent.setName(dto.parentName);
         parent.setDob(LocalDate.parse(dto.parentDob));
         parent.setPhone(dto.parentPhone);
         parent.setRole("PARENT");
         parent.setUser(user);
+        parent.setEmail(dto.parentEmail); // ← أضف هذا السطر لحفظ الإيميل بدون فحص
         parentRepository.save(parent);
+
 
         user.setReferenceId(parent.getId()); // نفترض أن Users يحتوي على حقل referenceId من نوع Long
         usersRepository.save(user);

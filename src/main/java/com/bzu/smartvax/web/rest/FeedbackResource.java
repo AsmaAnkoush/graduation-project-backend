@@ -7,18 +7,23 @@ import com.bzu.smartvax.service.dto.FeedbackDTO;
 import com.bzu.smartvax.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType; // مهم: إضافة هذا الاستيراد
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -47,71 +52,40 @@ public class FeedbackResource {
         this.feedbackRepository = feedbackRepository;
     }
 
-    /**
-     * {@code POST  /feedbacks} : Create a new feedback.
-     *
-     * @param feedbackDTO the feedbackDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new feedbackDTO, or with status {@code 400 (Bad Request)} if the feedback has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PostMapping("")
-    public ResponseEntity<FeedbackAnalysisResponseDTO> createFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO)
-        throws URISyntaxException, Exception {
-        LOG.debug("REST request to save Feedback : {}", feedbackDTO);
+    public ResponseEntity<FeedbackAnalysisResponseDTO> createFeedback(@Valid @RequestBody FeedbackDTO feedbackDTO) throws Exception {
+        LOG.debug("REST request to submit symptoms for Feedback analysis : {}", feedbackDTO);
         if (feedbackDTO.getId() != null) {
-            throw new BadRequestAlertException("A new feedback cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new feedback submission should not have an ID", ENTITY_NAME, "idexists");
         }
         FeedbackAnalysisResponseDTO analysisResult = feedbackService.submitFeedback(feedbackDTO);
         return ResponseEntity.ok(analysisResult);
-        //        return ResponseEntity.created(new URI("/api/feedbacks/" + feedbackDTO.getId()))
-        //            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, feedbackDTO.getId().toString()))
-        //            .body(feedbackDTO);
     }
 
-    /**
-     * {@code PUT  /feedbacks/:id} : Updates an existing feedback.
-     *
-     * @param id the id of the feedbackDTO to save.
-     * @param feedbackDTO the feedbackDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated feedbackDTO,
-     * or with status {@code 400 (Bad Request)} if the feedbackDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the feedbackDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PutMapping("/{id}")
     public ResponseEntity<FeedbackDTO> updateFeedback(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id") final Long id,
         @Valid @RequestBody FeedbackDTO feedbackDTO
     ) throws URISyntaxException {
         LOG.debug("REST request to update Feedback : {}, {}", id, feedbackDTO);
         if (feedbackDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+            throw new BadRequestAlertException("Feedback ID must not be null for update operations.", ENTITY_NAME, "idnull");
         }
         if (!Objects.equals(id, feedbackDTO.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+            throw new BadRequestAlertException("ID in path and body must match.", ENTITY_NAME, "idmismatch");
         }
 
         if (!feedbackRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Feedback with ID " + id + " not found.");
         }
 
-        feedbackDTO = feedbackService.update(feedbackDTO);
+        FeedbackDTO result = feedbackService.save(feedbackDTO);
+
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, feedbackDTO.getId().toString()))
-            .body(feedbackDTO);
+            .body(result);
     }
 
-    /**
-     * {@code PATCH  /feedbacks/:id} : Partial updates given fields of an existing feedback, field will ignore if it is null
-     *
-     * @param id the id of the feedbackDTO to save.
-     * @param feedbackDTO the feedbackDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated feedbackDTO,
-     * or with status {@code 400 (Bad Request)} if the feedbackDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the feedbackDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the feedbackDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<FeedbackDTO> partialUpdateFeedback(
         @PathVariable(value = "id", required = false) final Long id,
@@ -138,25 +112,23 @@ public class FeedbackResource {
     }
 
     /**
-     * {@code GET  /feedbacks} : get all the feedbacks.
+     * {@code GET  /feedbacks/by-vaccination/{vaccineId}} : Get all the feedbacks for a specific vaccination.
      *
+     * @param vaccineId the ID of the vaccination.
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of feedbacks in body.
      */
-    @GetMapping("")
-    public ResponseEntity<List<FeedbackDTO>> getAllFeedbacks(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
-        LOG.debug("REST request to get a page of Feedbacks");
-        Page<FeedbackDTO> page = feedbackService.findAll(pageable);
+    @GetMapping(value = "/by-vaccination/{vaccineId}", produces = MediaType.APPLICATION_JSON_VALUE) // تأكد من وجود هذا الـ endpoint
+    public ResponseEntity<List<FeedbackDTO>> getAllFeedbacksByVaccinationId(
+        @PathVariable Long vaccineId,
+        @ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to get a page of Feedbacks for Vaccination ID: {}", vaccineId);
+        Page<FeedbackDTO> page = feedbackService.findAllByVaccinationId(vaccineId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    /**
-     * {@code GET  /feedbacks/:id} : get the "id" feedback.
-     *
-     * @param id the id of the feedbackDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the feedbackDTO, or with status {@code 404 (Not Found)}.
-     */
     @GetMapping("/{id}")
     public ResponseEntity<FeedbackDTO> getFeedback(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Feedback : {}", id);
@@ -164,12 +136,6 @@ public class FeedbackResource {
         return ResponseUtil.wrapOrNotFound(feedbackDTO);
     }
 
-    /**
-     * {@code DELETE  /feedbacks/:id} : delete the "id" feedback.
-     *
-     * @param id the id of the feedbackDTO to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteFeedback(@PathVariable("id") Long id) {
         LOG.debug("REST request to delete Feedback : {}", id);
