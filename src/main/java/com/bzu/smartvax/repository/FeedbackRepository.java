@@ -1,12 +1,10 @@
 package com.bzu.smartvax.repository;
 
 import com.bzu.smartvax.domain.Feedback;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- * Spring Data JPA repository for the Feedback entity.
- */
-@SuppressWarnings("unused")
-@Repository
-public interface FeedbackRepository extends JpaRepository<Feedback, Long> {}
+public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
+    Page<Feedback> findByVaccinationId(Long vaccineId, Pageable pageable);
+}
